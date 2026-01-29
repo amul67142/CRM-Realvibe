@@ -1,0 +1,27 @@
+2026-01-23 12:10:47 - {"entry":[{"changes":[{"value":{"leadgen_id":"test_1769150447143","field_data":[{"values":["Meta Test User"]},{"values":["9876581593"]},{"values":["meta@example.com"]}],"custom_field":{"project_id":"1"}}}]}]}
+
+=== [2026-01-28 16:37:03] GET /Realvibe/api/webhooks/meta-leads.php?hub_mode=subscribe&hub_verify_token=realvibe_webhook_2026&hub_challenge=test123 ===
+Verification request - Mode: subscribe, Token: realvibe_webhook_2026
+Verification successful! Returning challenge: test123
+
+=== [2026-01-28 16:38:07] GET /Realvibe/api/webhooks/meta-leads.php ===
+Verification request - Mode: , Token: 
+Verification failed! Expected token: realvibe_webhook_2026
+
+=== [2026-01-28 16:39:57] GET /Realvibe/api/webhooks/meta-leads.php?hub.mode=subscribe&hub.challenge=52800863&hub.verify_token=realvibe_webhook_2026 ===
+Verification request - Mode: subscribe, Token: realvibe_webhook_2026
+Verification successful! Returning challenge: 52800863
+
+=== [2026-01-28 17:26:49] POST /Realvibe/api/webhooks/meta-leads.php ===
+Raw payload:
+{"entry":[{"id":"123456789","time":1769601409,"changes":[{"field":"leadgen","value":{"ad_id":"123456","form_id":"980881823939901","leadgen_id":"TEST_LEAD_1769601409","created_time":1769601409,"page_id":"123456789","adgroup_id":"123456"}}]}]}
+Signature: 
+WARNING: Signature verification skipped (no app secret configured)
+Processing result: {"success":false,"error":"Invalid webhook object type"}
+
+=== [2026-01-28 18:09:12] POST /Realvibe/api/webhooks/meta-leads.php ===
+Raw payload:
+{"entry":[{"id":"23072081346897","time":1769603952,"changes":[{"field":"leadgen","value":{"ad_id":null,"form_id":"980881823939901","leadgen_id":"3366158526681825","created_time":1769603952,"page_id":"23072081346897","adgroup_id":null}}]}]}
+Signature: 
+WARNING: Signature verification skipped (no app secret configured)
+Processing result: {"success":true,"processed":1,"results":[{"success":false,"error":"Failed to fetch lead details from Meta API"}]}

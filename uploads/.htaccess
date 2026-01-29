@@ -1,0 +1,21 @@
+# .htaccess for uploads directory
+# Allow access to uploaded files
+
+<IfModule mod_rewrite.c>
+    RewriteEngine Off
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes
+
+# Allow specific file types
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|pdf|doc|docx|mp4|mpeg|mov)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Block PHP execution in uploads directory (security)
+<FilesMatch "\.php$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>

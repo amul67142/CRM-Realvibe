@@ -1,0 +1,112 @@
+# Prevent directory listing
+Options -Indexes
+
+# Enable URL rewriting
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /Realvibe/
+    
+    # Force HTTPS (uncomment for production)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Redirect to index.php if not a file or directory
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Remove server signature
+    Header unset Server
+    Header unset X-Powered-By
+</IfModule>
+
+# Block access to sensitive directories
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect config directory
+<IfModule mod_rewrite.c>
+    RewriteRule ^config/ - [F,L]
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^cron/ - [F,L]
+    RewriteRule ^database/ - [F,L]
+    RewriteRule ^logs/ - [F,L]
+</IfModule>
+
+# Protect sensitive files
+<FilesMatch "(\.htaccess|\.htpasswd|\.env|composer\.json|composer\.lock|package\.json|README\.md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# PHP Security Settings
+<IfModule mod_php7.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value error_log logs/error.log
+    php_flag expose_php Off
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 128M
+</IfModule>
+
+# Custom Error Pages
+ErrorDocument 404 /Realvibe/index.php?error=404
+ErrorDocument 403 /Realvibe/index.php?error=403
+ErrorDocument 500 /Realvibe/index.php?error=500
+
+# Compress output
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+</IfModule>
+
+# Allow uploads directory access
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_URI} ^/Realvibe/uploads/
+    RewriteRule ^ - [L]
+</IfModule>
+
+# Allow API endpoints and webhooks (bypass authentication)
+<IfModule mod_rewrite.c>
+    # Allow webhook files to be accessed directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} ^/Realvibe/api/webhooks/
+    RewriteRule ^api/webhooks/(.+)$ api/webhooks/$1.php [L]
+    
+    # Allow other API files
+    RewriteCond %{REQUEST_URI} ^/Realvibe/api/
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+</IfModule>

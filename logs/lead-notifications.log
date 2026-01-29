@@ -1,0 +1,18 @@
+[2026-01-27 15:19:51] Starting new lead alert for Lead ID: 6, Project: Emmar
+[2026-01-27 15:19:51] Added client recipient: Amul - 9355614889
+[2026-01-27 15:19:51] Added admin recipient: Admin - 9355614889
+[2026-01-27 15:19:51] Sending to 919355614889 via campaign: New_Leads_Reminder, template: newleadsreminder
+[2026-01-27 15:19:51] Template params: ["Amul","Emmar","Amul","test@gmail.com","919355614885","919355614885"]
+[2026-01-27 15:19:53] Response code: 200, Response: {"success":"true","submitted_message_id":"b7ac1458-b725-498a-8908-a870b03f94c9"}
+[2026-01-27 15:19:53] Sending to 919355614889 via campaign: New_Leads_Reminder, template: newleadsreminder
+[2026-01-27 15:19:53] Template params: ["Admin","Emmar","Amul","test@gmail.com","919355614885","919355614885"]
+[2026-01-27 15:19:53] Response code: 200, Response: {"success":"true","submitted_message_id":"42bcd55c-2f99-41a2-a81d-fb153f096635"}
+[2026-01-27 15:30:19] Starting new lead alert for Lead ID: 7, Project: Emmar
+[2026-01-27 15:30:19] Added client recipient: Amul - 9355614889
+[2026-01-27 15:30:19] Added admin recipient: Admin - 9355614889
+[2026-01-27 15:30:19] Sending to 919355614889 via campaign: New_Leads_Reminder, template: newleadsreminder
+[2026-01-27 15:30:19] Template params: ["Amul","Emmar","Admin1","amul67142@gmail.com","911234567890","911234567890"]
+[2026-01-27 15:30:19] Response code: 200, Response: {"success":"true","submitted_message_id":"b34aff44-1e84-4af6-bd7f-db98da730b1e"}
+[2026-01-27 15:30:19] Sending to 919355614889 via campaign: New_Leads_Reminder, template: newleadsreminder
+[2026-01-27 15:30:19] Template params: ["Admin","Emmar","Admin1","amul67142@gmail.com","911234567890","911234567890"]
+[2026-01-27 15:30:20] Response code: 200, Response: {"success":"true","submitted_message_id":"8604c543-2042-4574-8214-452d59986f7f"}
