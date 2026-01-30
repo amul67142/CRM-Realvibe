@@ -155,7 +155,7 @@ try {
                     
                     // Enroll in your AiSensy campaign
                     // This campaign handles: welcome message, admin notification, follow-ups
-                    $campaignName = 'realvibe_lead_campaign'; // Your AiSensy campaign name
+                    $campaignName = 'New_Leads_Reminder'; // Your AiSensy campaign name
                     
                     $response = $aisensy->sendTextMessage(
                         $phone,
