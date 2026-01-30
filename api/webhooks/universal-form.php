@@ -16,6 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+
+// Suppress errors in output to prevent JSON corruption
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../models/Lead.php';
@@ -159,9 +165,10 @@ try {
         }
     }
     
+    
     // Create lead
     $db = getDatabaseConnection();
-    $leadModel = new Lead($db);
+    $leadModel = new Lead();
     
     $leadData = [
         'name' => trim($name),
