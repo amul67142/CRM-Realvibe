@@ -19,13 +19,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 ini_set('display_errors', 0);
 error_reporting(0);
 
+// Log file
+$logFile = __DIR__ . '/../../logs/universal-webhook.log';
+if (!file_exists(dirname($logFile))) {
+    mkdir(dirname($logFile), 0755, true);
+}
+
+function logWebhook($message) {
+    global $logFile;
+    file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] " . $message . "\n", FILE_APPEND);
+}
+
 try {
+    logWebhook("=== New webhook request ===");
+    
     // Simple require - no complex dependencies
     require_once __DIR__ . '/../../config/config.php';
     require_once __DIR__ . '/../../config/database.php';
     
     // Get POST data
     $rawData = file_get_contents('php://input');
+    logWebhook("Raw data: " . $rawData);
+    
     $data = json_decode($rawData, true);
     
     if (!$data) {
@@ -33,24 +48,30 @@ try {
     }
     
     if (!empty($_POST)) {
-        $data = array_merge($data, $_POST);
+        logWebhook("Merging _POST: " . json_encode($_POST));
+        $data = array_merge($data ?: [], $_POST);
     }
     
     if (!empty($_GET)) {
-        $data = array_merge($data, $_GET);
+        logWebhook("Merging _GET: " . json_encode($_GET));
+        $data = array_merge($data ?: [], $_GET);
     }
+    
+    logWebhook("Final parsed data: " . json_encode($data));
     
     if (empty($data)) {
         throw new Exception('No data received');
     }
     
-    // Extract fields (handle all variations)
-    $name = $data['name'] ?? $data['your-name'] ?? $data['full-name'] ?? 'Unknown';
-    $email = $data['email'] ?? $data['your-email'] ?? null;
-    $phone = $data['phone'] ?? $data['your-phone'] ?? $data['mobile'] ?? null;
-    $message = $data['message'] ?? $data['your-message'] ?? '';
+    // Extract fields (handle ALL possible variations)
+    $name = $data['name'] ?? $data['your-name'] ?? $data['full-name'] ?? $data['fullname'] ?? 'Unknown';
+    $email = $data['email'] ?? $data['your-email'] ?? $data['user-email'] ?? null;
+    $phone = $data['phone'] ?? $data['your-phone'] ?? $data['mobile'] ?? $data['telephone'] ?? null;
+    $message = $data['message'] ?? $data['your-message'] ?? $data['your-comment'] ?? '';
     $projectId = $data['project_id'] ?? $_GET['project_id'] ?? 1;
     $source = $data['source'] ?? $_GET['source'] ?? 'website_form';
+    
+    logWebhook("Extracted - Name: '$name', Email: '$email', Phone: '$phone', Project: $projectId, Source: $source");
     
     // Validate
     if (!$email && !$phone) {
