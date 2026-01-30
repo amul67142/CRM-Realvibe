@@ -138,12 +138,13 @@ try {
         $leadId = $db->lastInsertId();
         logWebhook("✅ Lead created successfully! ID: $leadId");
         
-        // Send welcome message if phone is available
+        // Enroll in AiSensy campaign if phone is available
         if ($phone) {
             try {
                 // Check if AiSensy service exists
                 if (file_exists(__DIR__ . '/../../services/AiSensyService.php')) {
                     require_once __DIR__ . '/../../services/AiSensyService.php';
+                    require_once __DIR__ . '/../../config/aisensy.php';
                     
                     $aisensy = new AiSensyService();
                     
@@ -152,33 +153,25 @@ try {
                     $leadStmt->execute([$leadId]);
                     $lead = $leadStmt->fetch();
                     
-                    // Get project details for welcome message
-                    $projectStmt = $db->prepare("SELECT * FROM projects WHERE id = ?");
-                    $projectStmt->execute([$projectId]);
-                    $project = $projectStmt->fetch();
+                    // Enroll in your AiSensy campaign
+                    // This campaign handles: welcome message, admin notification, follow-ups
+                    $campaignName = 'realvibe_lead_campaign'; // Your AiSensy campaign name
                     
-                    if ($project && !empty($project['welcome_message'])) {
-                        $aisensy->sendWelcomeMessage($lead, $project);
-                        logWebhook("✅ Welcome message sent via WhatsApp");
+                    $response = $aisensy->sendTextMessage(
+                        $phone,
+                        "New lead", // Message placeholder
+                        $campaignName
+                    );
+                    
+                    if ($response['success']) {
+                        logWebhook("✅ Lead enrolled in AiSensy campaign: $campaignName");
                     } else {
-                        logWebhook("⚠️ No welcome message configured for project");
+                        logWebhook("⚠️ Failed to enroll in campaign: " . ($response['message'] ?? 'Unknown error'));
                     }
                 }
             } catch (Exception $e) {
-                logWebhook("⚠️ Warning: Failed to send welcome message - " . $e->getMessage());
+                logWebhook("⚠️ Warning: Failed to enroll in AiSensy campaign - " . $e->getMessage());
             }
-        }
-        
-        // Auto-enroll in campaigns
-        try {
-            if (file_exists(__DIR__ . '/../../services/CampaignService.php')) {
-                require_once __DIR__ . '/../../services/CampaignService.php';
-                $campaignService = new CampaignService();
-                $campaignService->autoEnrollLead($leadId);
-                logWebhook("✅ Lead enrolled in campaigns");
-            }
-        } catch (Exception $e) {
-            logWebhook("⚠️ Warning: Failed to enroll in campaigns - " . $e->getMessage());
         }
         
         http_response_code(200);
