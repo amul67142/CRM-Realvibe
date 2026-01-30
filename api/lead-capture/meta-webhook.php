@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../services/CampaignService.php';
 
 // Handle GET request (webhook verification)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $verifyToken = 'YOUR_WEBHOOK_VERIFY_TOKEN'; // Set this in Meta Developer Console
+    $verifyToken = META_WEBHOOK_VERIFY_TOKEN;
     
     $mode = $_GET['hub_mode'] ?? '';
     $token = $_GET['hub_verify_token'] ?? '';

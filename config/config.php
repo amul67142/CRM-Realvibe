@@ -3,8 +3,20 @@
  * Application Configuration
  */
 
-// Environment detection
-define('ENVIRONMENT', 'development'); // Change to 'production' for live server
+// Environment detection (auto-detect based on server)
+function isProduction() {
+    if (isset($_SERVER['SERVER_NAME']) && 
+        (strpos($_SERVER['SERVER_NAME'], 'localhost') === false && 
+         strpos($_SERVER['SERVER_NAME'], '127.0.0.1') === false)) {
+        return true;
+    }
+    if (file_exists(__DIR__ . '/../.production')) {
+        return true;
+    }
+    return false;
+}
+
+define('ENVIRONMENT', isProduction() ? 'production' : 'development');
 
 // Base URL configuration (auto-detect)
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
@@ -14,6 +26,13 @@ $basePath = ($scriptPath === '/' || $scriptPath === '\\') ? '' : $scriptPath;
 
 define('BASE_URL', $protocol . $host . $basePath);
 define('BASE_PATH', __DIR__ . '/../');
+
+// Webhook URLs
+define('WEBHOOK_BASE_URL', BASE_URL . '/api/lead-capture');
+define('META_WEBHOOK_URL', WEBHOOK_BASE_URL . '/meta-webhook.php');
+
+// Webhook Verify Token (change this to a secure random string)
+define('META_WEBHOOK_VERIFY_TOKEN', 'RealVibe_Meta_Webhook_2024_Secure_Token');
 
 // Error reporting based on environment
 if (ENVIRONMENT === 'development') {
