@@ -174,9 +174,11 @@ try {
         'is_subscribed' => 1
     ];
     
-    $leadId = $leadModel->create($leadData);
     
-    if ($leadId) {
+    $result = $leadModel->create($leadData);
+    
+    if ($result['success']) {
+        $leadId = $result['id'];
         logWebhook("✅ Lead created successfully! ID: $leadId");
         
         // Send welcome message if phone is available
@@ -215,7 +217,7 @@ try {
             'lead_id' => $leadId
         ]);
     } else {
-        throw new Exception('Failed to create lead');
+        throw new Exception($result['message'] ?? 'Failed to create lead');
     }
     
 } catch (Exception $e) {
