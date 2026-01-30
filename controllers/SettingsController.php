@@ -202,8 +202,17 @@ class SettingsController {
     private function testAiSensy($phone) {
         require_once BASE_PATH . 'services/AiSensyService.php';
         
+        $campaign = $_POST['campaign'] ?? 'test_campaign';
+        $template = $_POST['template'] ?? null;
+        
         $aisensy = new AiSensyService();
-        $result = $aisensy->sendTextMessage($phone, 'Test message from RealVibe CRM');
+        
+        // If template provided, use template message, otherwise use simple text
+        if ($template) {
+            $result = $aisensy->sendTemplateMessage($phone, $template, ['Test from RealVibe CRM']);
+        } else {
+            $result = $aisensy->sendTextMessage($phone, 'Test message from RealVibe CRM - Connection successful! 🎉');
+        }
         
         json($result);
     }

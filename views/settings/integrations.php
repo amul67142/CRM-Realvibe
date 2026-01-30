@@ -48,9 +48,11 @@ include BASE_PATH . 'views/layouts/header.php';
                 <div class="card-body">
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center gap-3">
-                            <div class="avatar placeholder">
-                                <div class="bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-lg w-12">
-                                    <span class="text-2xl">🚀</span>
+                            <div class="avatar">
+                                <div class="w-12 rounded-lg bg-white p-2">
+                                    <img src="https://www.aisensy.com/hubfs/aisensy_logo.svg" 
+                                         alt="AiSensy" 
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-lg w-full h-full flex items-center justify-center\'><span class=\'text-2xl\'>🚀</span></div>';">
                                 </div>
                             </div>
                             <div>
@@ -89,12 +91,25 @@ include BASE_PATH . 'views/layouts/header.php';
                                    class="input input-bordered input-sm">
                         </div>
                         
-                        <button type="button" class="btn btn-outline btn-success btn-sm w-full" 
-                                onclick="testIntegration('aisensy')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <div class="alert <?= !empty($settings['aisensy_api_key']) ? 'alert-success' : 'alert-warning' ?> py-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-5 h-5">
+                                <?php if (!empty($settings['aisensy_api_key'])): ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <?php else: ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                <?php endif; ?>
                             </svg>
-                            Test Connection
+                            <span class="text-xs">
+                                <?= !empty($settings['aisensy_api_key']) ? 'API key configured - Integration active' : 'API key required' ?>
+                            </span>
+                        </div>
+                        
+                        <button type="button" class="btn btn-outline btn-sm w-full mt-2" 
+                                onclick="showAiSensyTestModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Test AiSensy
                         </button>
                     </div>
                 </div>
@@ -105,9 +120,11 @@ include BASE_PATH . 'views/layouts/header.php';
                 <div class="card-body">
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center gap-3">
-                            <div class="avatar placeholder">
-                                <div class="bg-gradient-to-br from-green-500 to-teal-500 text-white rounded-lg w-12">
-                                    <span class="text-2xl">📱</span>
+                            <div class="avatar">
+                                <div class="w-12 rounded-lg bg-white p-2">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                                         alt="WhatsApp" 
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'bg-gradient-to-br from-green-500 to-teal-500 text-white rounded-lg w-full h-full flex items-center justify-center\'><span class=\'text-2xl\'>📱</span></div>';">
                                 </div>
                             </div>
                             <div>
@@ -159,12 +176,26 @@ include BASE_PATH . 'views/layouts/header.php';
                             </div>
                         </div>
                         
-                        <button type="button" class="btn btn-outline btn-success btn-sm w-full" 
-                                onclick="testIntegration('whatsapp_api')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                         
+                        <div class="alert <?= !empty($settings['whatsapp_api_key']) ? 'alert-success' : 'alert-warning' ?> py-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-5 h-5">
+                                <?php if (!empty($settings['whatsapp_api_key'])): ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <?php else: ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                <?php endif; ?>
                             </svg>
-                            Test Connection
+                            <span class="text-xs">
+                                <?= !empty($settings['whatsapp_api_key']) ? 'API configured - Integration ready' : 'API key required' ?>
+                            </span>
+                        </div>
+
+                        <button type="button" class="btn btn-outline btn-sm w-full mt-2" 
+                                onclick="testWhatsAppAPI()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Test WhatsApp API
                         </button>
                     </div>
                 </div>
@@ -175,9 +206,11 @@ include BASE_PATH . 'views/layouts/header.php';
                 <div class="card-body">
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center gap-3">
-                            <div class="avatar placeholder">
-                                <div class="bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-lg w-12">
-                                    <span class="text-2xl">💬</span>
+                            <div class="avatar">
+                                <div class="w-12 rounded-lg bg-white p-2">
+                                    <img src="https://www.vectorlogo.zone/logos/twilio/twilio-icon.svg" 
+                                         alt="Twilio" 
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-lg w-full h-full flex items-center justify-center\'><span class=\'text-2xl\'>💬</span></div>';">
                                 </div>
                             </div>
                             <div>
@@ -226,6 +259,19 @@ include BASE_PATH . 'views/layouts/header.php';
                                    placeholder="whatsapp:+14155238886" 
                                    class="input input-bordered input-sm">
                         </div>
+                        
+                        <div class="alert <?= !empty($settings['twilio_account_sid']) && !empty($settings['twilio_auth_token']) ? 'alert-success' : 'alert-warning' ?> py-2 mt-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-5 h-5">
+                                <?php if (!empty($settings['twilio_account_sid']) && !empty($settings['twilio_auth_token'])): ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <?php else: ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                <?php endif; ?>
+                            </svg>
+                            <span class="text-xs">
+                                <?= (!empty($settings['twilio_account_sid']) && !empty($settings['twilio_auth_token'])) ? 'Credentials configured' : 'Credentials required' ?>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -271,9 +317,11 @@ include BASE_PATH . 'views/layouts/header.php';
                 <div class="card-body">
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center gap-3">
-                            <div class="avatar placeholder">
-                                <div class="bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-lg w-14">
-                                    <span class="text-3xl">📘</span>
+                            <div class="avatar">
+                                <div class="w-14 rounded-lg bg-white p-2">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" 
+                                         alt="Meta Facebook" 
+                                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-lg w-full h-full flex items-center justify-center\'><span class=\'text-3xl\'>📘</span></div>';">
                                 </div>
                             </div>
                             <div>
@@ -443,13 +491,18 @@ include BASE_PATH . 'views/layouts/header.php';
                                    class="input input-bordered input-sm">
                         </div>
                         
-                        <button type="button" class="btn btn-outline btn-success btn-sm w-full" 
-                                onclick="testIntegration('smtp')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <div class="alert <?= !empty($settings['smtp_host']) && !empty($settings['smtp_username']) ? 'alert-success' : 'alert-warning' ?> py-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-5 h-5">
+                                <?php if (!empty($settings['smtp_host']) && !empty($settings['smtp_username'])): ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <?php else: ?>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                <?php endif; ?>
                             </svg>
-                            Test Connection
-                        </button>
+                            <span class="text-xs">
+                                <?= (!empty($settings['smtp_host']) && !empty($settings['smtp_username'])) ? 'SMTP configured' : 'Configuration incomplete' ?>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -550,6 +603,68 @@ document.querySelectorAll('.tabs .tab').forEach(tab => {
         });
     });
 });
+
+// AiSensy test with campaign and template
+function showAiSensyTestModal() {
+    const phone = prompt('Enter test phone number (with country code):');
+    if (!phone) return;
+    
+    const campaign = prompt('Enter campaign name:', 'test_campaign');
+    if (!campaign) return;
+    
+    const template = prompt('Enter template ID/name:', 'test_template');
+    if (!template) return;
+    
+    showNotification('Testing AiSensy connection...', 'info');
+    
+    $.ajax({
+        url: '<?= url('settings/test-integration') ?>',
+        method: 'POST',
+        data: {
+            provider: 'aisensy',
+            phone: phone,
+            campaign: campaign,
+            template: template
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('✓ AiSensy test successful! Message sent.', 'success');
+            } else {
+                showNotification('✗ Test failed: ' + response.error, 'error');
+            }
+        },
+        error: function() {
+            showNotification('✗ Test failed. Check your configuration.', 'error');
+        }
+    });
+}
+
+// WhatsApp API test - simple test message
+function testWhatsAppAPI() {
+    const phone = prompt('Enter test phone number (with country code, e.g., 919876543210):');
+    if (!phone) return;
+    
+    showNotification('Testing WhatsApp API connection...', 'info');
+    
+    $.ajax({
+        url: '<?= url('settings/test-integration') ?>',
+        method: 'POST',
+        data: {
+            provider: 'whatsapp_api',
+            phone: phone
+        },
+        success: function(response) {
+            if (response.success) {
+                showNotification('✓ WhatsApp API test successful! Welcome message sent.', 'success');
+            } else {
+                showNotification('✗ Test failed: ' + response.error, 'error');
+            }
+        },
+        error: function() {
+            showNotification('✗ Test failed. Check your configuration.', 'error');
+        }
+    });
+}
 
 function testIntegration(provider) {
     // Meta API test doesn't need phone number, just tests connection
