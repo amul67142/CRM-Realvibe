@@ -74,6 +74,25 @@ try {
     // Direct database insert - no model dependencies
     $db = getDatabaseConnection();
     
+    // Check for duplicate first (same phone + project)
+    if ($phone) {
+        $checkStmt = $db->prepare("SELECT id FROM leads WHERE phone = ? AND project_id = ?");
+        $checkStmt->execute([$phone, $projectId]);
+        $existing = $checkStmt->fetch();
+        
+        if ($existing) {
+            // Lead already exists - return success anyway
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Thank you! We already have your details.',
+                'lead_id' => $existing['id'],
+                'note' => 'duplicate'
+            ]);
+            exit;
+        }
+    }
+    
     $stmt = $db->prepare("
         INSERT INTO leads (project_id, name, phone, email, source, status, is_subscribed, notes, created_at)
         VALUES (?, ?, ?, ?, ?, 'new', 1, ?, NOW())
