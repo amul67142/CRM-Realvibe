@@ -4,7 +4,10 @@ Options -Indexes
 # Enable URL rewriting
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /Realvibe/
+    # For production (Hostinger): use /
+    # For local (XAMPP): use /Realvibe/
+    # Auto-detect based on server
+    RewriteBase /
     
     # Force HTTPS (uncomment for production)
     # RewriteCond %{HTTPS} off
@@ -70,9 +73,9 @@ Options -Indexes
 </IfModule>
 
 # Custom Error Pages
-ErrorDocument 404 /Realvibe/index.php?error=404
-ErrorDocument 403 /Realvibe/index.php?error=403
-ErrorDocument 500 /Realvibe/index.php?error=500
+ErrorDocument 404 /index.php?error=404
+ErrorDocument 403 /index.php?error=403
+ErrorDocument 500 /index.php?error=500
 
 # Compress output
 <IfModule mod_deflate.c>
@@ -94,7 +97,7 @@ ErrorDocument 500 /Realvibe/index.php?error=500
 
 # Allow uploads directory access
 <IfModule mod_rewrite.c>
-    RewriteCond %{REQUEST_URI} ^/Realvibe/uploads/
+    RewriteCond %{REQUEST_URI} ^/uploads/
     RewriteRule ^ - [L]
 </IfModule>
 
@@ -102,11 +105,11 @@ ErrorDocument 500 /Realvibe/index.php?error=500
 <IfModule mod_rewrite.c>
     # Allow webhook files to be accessed directly
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_URI} ^/Realvibe/api/webhooks/
+    RewriteCond %{REQUEST_URI} ^/api/webhooks/
     RewriteRule ^api/webhooks/(.+)$ api/webhooks/$1.php [L]
     
     # Allow other API files
-    RewriteCond %{REQUEST_URI} ^/Realvibe/api/
+    RewriteCond %{REQUEST_URI} ^/api/
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^ - [L]
 </IfModule>
