@@ -110,6 +110,10 @@ function statusBadge($status) {
  * Generate source badge HTML
  */
 function sourceBadge($source) {
+    if (empty($source)) {
+        return '<span class="badge badge-ghost">-</span>';
+    }
+    
     $badges = [
         'meta' => '<span class="badge badge-primary">Meta/Facebook</span>',
         'wordpress' => '<span class="badge badge-info">WordPress</span>',
@@ -118,7 +122,15 @@ function sourceBadge($source) {
         'other' => '<span class="badge badge-ghost">Other</span>',
     ];
     
-    return $badges[$source] ?? '<span class="badge badge-ghost">' . ucfirst($source) . '</span>';
+    // If source has a predefined badge, use it
+    if (isset($badges[$source])) {
+        return $badges[$source];
+    }
+    
+    // For custom sources (like pyramid_alban), display with default styling
+    // Replace underscores with spaces and capitalize words
+    $displayName = ucwords(str_replace('_', ' ', $source));
+    return '<span class="badge badge-outline">' . htmlspecialchars($displayName) . '</span>';
 }
 
 /**

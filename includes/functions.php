@@ -259,8 +259,14 @@ function truncate($text, $length = 100, $ellipsis = '...') {
  * Time ago format
  */
 function timeAgo($datetime) {
-    $timestamp = strtotime($datetime);
-    $diff = time() - $timestamp;
+    if (empty($datetime) || $datetime === '0000-00-00 00:00:00') {
+        return '-';
+    }
+    
+    // Use DateTime with timezone to properly calculate time difference
+    $createdTime = new DateTime($datetime, new DateTimeZone('Asia/Kolkata'));
+    $currentTime = new DateTime('now', new DateTimeZone('Asia/Kolkata'));
+    $diff = $currentTime->getTimestamp() - $createdTime->getTimestamp();
     
     if ($diff < 60) {
         return 'Just now';
