@@ -157,16 +157,45 @@ try {
                     // This campaign handles: welcome message, admin notification, follow-ups
                     $campaignName = 'New_Leads_Reminder'; // Your AiSensy campaign name
                     
-                    $response = $aisensy->sendTextMessage(
-                        $phone,
-                        "New lead", // Message placeholder
-                        $campaignName
-                    );
+                    // Prepare data for AiSensy API
+                    $aiSensyData = [
+                        'apiKey' => AISENSY_API_KEY,
+                        'campaignName' => $campaignName,
+                        'destination' => $aisensy->formatPhoneNumber($phone),
+                        'userName' => $name,
+                        'templateParams' => [
+                            $name,                    // {{1}} - Name
+                            $source,                  // {{2}} - Source
+                            $name,                    // {{3}} - Name again
+                            $email ?? 'Not provided', // {{4}} - Email
+                            $phone,                   // {{5}} - Phone
+                            $phone                    // {{6}} - WhatsApp (same as phone)
+                        ],
+                        'source' => 'realvibe-crm'
+                    ];
                     
-                    if ($response['success']) {
+                    // Make direct API call
+                    $ch = curl_init(AISENSY_API_BASE_URL);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($aiSensyData));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        'Content-Type: application/json',
+                        'Accept: application/json'
+                    ]);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                    
+                    $apiResponse = curl_exec($ch);
+                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+                    
+                    logWebhook("AiSensy API request: " . json_encode($aiSensyData));
+                    logWebhook("AiSensy API response: " . $apiResponse . " (HTTP $httpCode)");
+                    
+                    if ($httpCode >= 200 && $httpCode < 300) {
                         logWebhook("✅ Lead enrolled in AiSensy campaign: $campaignName");
                     } else {
-                        logWebhook("⚠️ Failed to enroll in campaign: " . ($response['message'] ?? 'Unknown error'));
+                        logWebhook("⚠️ Failed to enroll in campaign. HTTP Code: $httpCode");
                     }
                 }
             } catch (Exception $e) {
