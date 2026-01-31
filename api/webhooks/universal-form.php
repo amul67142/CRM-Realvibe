@@ -158,20 +158,19 @@ try {
                     $campaignName = 'New_Leads_Reminder'; // Your AiSensy campaign name
                     
                     // Prepare data for AiSensy API
+                    // Based on your template: Hey {{1}}, A new lead from {{2}}, Name: {{3}}, Email: {{4}}, Phone: {{5}}, WhatsApp: {{6}}
                     $aiSensyData = [
                         'apiKey' => AISENSY_API_KEY,
                         'campaignName' => $campaignName,
                         'destination' => $aisensy->formatPhoneNumber($phone),
-                        'userName' => $name,
                         'templateParams' => [
-                            $name,                    // {{1}} - Name
-                            $source,                  // {{2}} - Source
-                            $name,                    // {{3}} - Name again
-                            $email ?? 'Not provided', // {{4}} - Email
-                            $phone,                   // {{5}} - Phone
-                            $phone                    // {{6}} - WhatsApp (same as phone)
-                        ],
-                        'source' => 'realvibe-crm'
+                            '1' => $name,                    // {{1}} - Name in greeting
+                            '2' => $source,                  // {{2}} - Source 
+                            '3' => $name,                    // {{3}} - Name in details
+                            '4' => $email ?? 'Not provided', // {{4}} - Email
+                            '5' => $phone,                   // {{5}} - Phone
+                            '6' => $phone                    // {{6}} - WhatsApp
+                        ]
                     ];
                     
                     // Make direct API call
@@ -193,7 +192,12 @@ try {
                     logWebhook("AiSensy API response: " . $apiResponse . " (HTTP $httpCode)");
                     
                     if ($httpCode >= 200 && $httpCode < 300) {
-                        logWebhook("✅ Lead enrolled in AiSensy campaign: $campaignName");
+                        $responseData = json_decode($apiResponse, true);
+                        if (isset($responseData['statusCode']) && $responseData['statusCode'] == 400) {
+                            logWebhook("⚠️ Failed: " . ($responseData['message'] ?? 'Unknown error'));
+                        } else {
+                            logWebhook("✅ Lead enrolled in AiSensy campaign: $campaignName");
+                        }
                     } else {
                         logWebhook("⚠️ Failed to enroll in campaign. HTTP Code: $httpCode");
                     }
