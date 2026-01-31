@@ -153,53 +153,25 @@ try {
                     $leadStmt->execute([$leadId]);
                     $lead = $leadStmt->fetch();
                     
-                    // Enroll in your AiSensy campaign
-                    // This campaign handles: welcome message, admin notification, follow-ups
-                    $campaignName = 'New_Leads_Reminder'; // Your AiSensy campaign name
+                    // Use LeadNotificationService (same as manual lead creation)
+                    require_once __DIR__ . '/../../services/LeadNotificationService.php';
                     
-                    // Prepare data for AiSensy API
-                    // Based on your template: Hey {{1}}, A new lead from {{2}}, Name: {{3}}, Email: {{4}}, Phone: {{5}}, WhatsApp: {{6}}
-                    $aiSensyData = [
-                        'apiKey' => AISENSY_API_KEY,
-                        'campaignName' => $campaignName,
-                        'destination' => $aisensy->formatPhoneNumber($phone),
-                        'templateParams' => [
-                            '1' => $name,                    // {{1}} - Name in greeting
-                            '2' => $source,                  // {{2}} - Source 
-                            '3' => $name,                    // {{3}} - Name in details
-                            '4' => $email ?? 'Not provided', // {{4}} - Email
-                            '5' => $phone,                   // {{5}} - Phone
-                            '6' => $phone                    // {{6}} - WhatsApp
-                        ]
-                    ];
+                    // Get project details for notification
+                    $projectStmt = $db->prepare("SELECT * FROM projects WHERE id = ?");
+                    $projectStmt->execute([$projectId]);
+                    $project = $projectStmt->fetch();
                     
-                    // Make direct API call
-                    $ch = curl_init(AISENSY_API_BASE_URL);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($aiSensyData));
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                        'Content-Type: application/json',
-                        'Accept: application/json'
-                    ]);
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-                    
-                    $apiResponse = curl_exec($ch);
-                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                    curl_close($ch);
-                    
-                    logWebhook("AiSensy API request: " . json_encode($aiSensyData));
-                    logWebhook("AiSensy API response: " . $apiResponse . " (HTTP $httpCode)");
-                    
-                    if ($httpCode >= 200 && $httpCode < 300) {
-                        $responseData = json_decode($apiResponse, true);
-                        if (isset($responseData['statusCode']) && $responseData['statusCode'] == 400) {
-                            logWebhook("⚠️ Failed: " . ($responseData['message'] ?? 'Unknown error'));
+                    if ($project) {
+                        $notificationService = new LeadNotificationService();
+                        $result = $notificationService->sendNewLeadAlert($lead, $project);
+                        
+                        if ($result['success']) {
+                            logWebhook("✅ Lead notification sent via LeadNotificationService");
                         } else {
-                            logWebhook("✅ Lead enrolled in AiSensy campaign: $campaignName");
+                            logWebhook("⚠️ Failed to send notification: " . ($result['message'] ?? 'Unknown error'));
                         }
                     } else {
-                        logWebhook("⚠️ Failed to enroll in campaign. HTTP Code: $httpCode");
+                        logWebhook("⚠️ Project not found for ID: $projectId");
                     }
                 }
             } catch (Exception $e) {
