@@ -119,7 +119,7 @@
 <body>
     <div class="container">
         <header>
-            <img src="assets/images/realvibe-logo.png" alt="Realvibe CRM" class="logo">
+            <img src="/public/assets/images/realvibe-logo.png" alt="Realvibe CRM" class="logo">
             <div class="header-content">
                 <h1>Terms and Conditions</h1>
                 <p class="last-updated">Last Updated: February 2, 2026</p>
