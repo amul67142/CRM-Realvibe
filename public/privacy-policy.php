@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - Realvibe CRM</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
         * {
             margin: 0;
@@ -29,7 +30,19 @@
         header {
             border-bottom: 3px solid #0066cc;
             padding-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
             margin-bottom: 40px;
+        }
+        
+        .logo {
+            height: 80px;
+            width: auto;
+        }
+        
+        .header-content {
+            flex: 1;
         }
         
         h1 {
@@ -99,8 +112,11 @@
 <body>
     <div class="container">
         <header>
-            <h1>Privacy Policy</h1>
-            <p class="last-updated">Last Updated: February 2, 2026</p>
+            <img src="assets/images/realvibe-logo.png" alt="Realvibe CRM" class="logo">
+            <div class="header-content">
+                <h1>Privacy Policy</h1>
+                <p class="last-updated">Last Updated: February 2, 2026</p>
+            </div>
         </header>
 
         <section>
@@ -297,7 +313,7 @@
                 <strong>Realvibe CRM</strong><br>
                 Email: <a href="mailto:support@realvibe.in">support@realvibe.in</a><br>
                 Website: <a href="https://crm.realvibe.in">https://crm.realvibe.in</a><br>
-                Phone: +91 XXXX XXXXXX
+                Phone: +91 9811238092
             </p>
         </div>
 
