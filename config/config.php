@@ -5,6 +5,11 @@
 
 // Environment detection (auto-detect based on server)
 function isProduction() {
+    // Handle CLI execution
+    if (php_sapi_name() === 'cli') {
+        return file_exists(__DIR__ . '/../.production');
+    }
+    
     if (isset($_SERVER['SERVER_NAME']) && 
         (strpos($_SERVER['SERVER_NAME'], 'localhost') === false && 
          strpos($_SERVER['SERVER_NAME'], '127.0.0.1') === false)) {

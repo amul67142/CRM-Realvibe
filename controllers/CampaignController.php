@@ -227,4 +227,217 @@ class CampaignController {
         
         redirect('campaigns');
     }
+    
+    /**
+     * Start nurturing campaign
+     */
+    public function start() {
+        requireLogin();
+        
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            redirect('campaigns');
+        }
+        
+        // Load NurturingService
+        require_once __DIR__ . '/../services/NurturingService.php';
+        $nurturingService = new NurturingService();
+        
+        // Get campaign
+        $campaign = $this->campaignModel->getById($id);
+        if (!$campaign) {
+            setFlashMessage('Campaign not found', 'error');
+            redirect('campaigns');
+        }
+        
+        // Update campaign status to active
+        $this->campaignModel->updateStatus($id, 'active');
+    // Get all leads for this campaign
+        $leads = $this->campaignModel->getCampaignLeads($id, 'pending');
+        
+        $welcomeSent = 0;
+        $errors = 0;
+        
+        // Send welcome message to all pending leads
+        foreach ($leads as $lead) {
+            if ($nurturingService->sendWelcomeMessage($lead['lead_id'], $id)) {
+                $welcomeSent++;
+            } else {
+                $errors++;
+            }
+        }
+        
+        setFlashMessage("Campaign started! Welcome messages sent: $welcomeSent", 'success');
+        redirect('campaigns');
+    }
+    
+    /**
+     * Pause nurturing campaign
+     */
+    public function pause() {
+        requireLogin();
+        
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            redirect('campaigns');
+        }
+        
+        if ($this->campaignModel->updateStatus($id, 'paused')) {
+            setFlashMessage('Campaign paused successfully', 'success');
+        } else {
+            setFlashMessage('Failed to pause campaign', 'error');
+        }
+        
+        redirect('campaigns');
+    }
+    
+    /**
+     * Resume nurturing campaign
+     */
+    public function resume() {
+        requireLogin();
+        
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            redirect('campaigns');
+        }
+        
+        if ($this->campaignModel->updateStatus($id, 'active')) {
+            setFlashMessage('Campaign resumed successfully', 'success');
+        } else {
+            setFlashMessage('Failed to resume campaign', 'error');
+        }
+        
+        redirect('campaigns');
+    }
+    
+    /**
+     * Manage campaign leads
+     */
+    public function manageLeads() {
+        requireLogin();
+        
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            redirect('campaigns');
+        }
+        
+        $campaign = $this->campaignModel->getById($id);
+        if (!$campaign) {
+            setFlashMessage('Campaign not found', 'error');
+            redirect('campaigns');
+        }
+        
+        // Get campaign leads
+        $campaignLeads = $this->campaignModel->getCampaignLeads($id);
+        
+        // Get all leads for this project (for adding new ones)
+        require_once __DIR__ . '/../models/Lead.php';
+        $leadModel = new Lead();
+        $allLeads = $leadModel->getAll(['project_id' => $campaign['project_id']]);
+        
+        $data = [
+            'campaign' => $campaign,
+            'campaignLeads' => $campaignLeads,
+            'allLeads' => $allLeads
+        ];
+        
+        include BASE_PATH . 'views/campaigns/manage-leads.php';
+    }
+    
+    /**
+     * Add lead to campaign
+     */
+    public function addLead() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('campaigns');
+        }
+        
+        $campaignId = $_POST['campaign_id'] ?? null;
+        $leadId = $_POST['lead_id'] ?? null;
+        
+        if (!$campaignId || !$leadId) {
+            json(['success' => false, 'error' => 'Missing parameters'], 400);
+        }
+        
+        if ($this->campaignModel->addLeadToCampaign($campaignId, $leadId)) {
+            json(['success' => true, 'message' => 'Lead added to campaign']);
+        } else {
+            json(['success' => false, 'error' => 'Failed to add lead'], 500);
+        }
+    }
+    
+    /**
+     * Remove lead from campaign
+     */
+    public function removeLead() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('campaigns');
+        }
+        
+        $campaignId = $_POST['campaign_id'] ?? null;
+        $leadId = $_POST['lead_id'] ?? null;
+        
+        if (!$campaignId || !$leadId) {
+            json(['success' => false, 'error' => 'Missing parameters'], 400);
+        }
+        
+        if ($this->campaignModel->removeLeadFromCampaign($campaignId, $leadId)) {
+            json(['success' => true, 'message' => 'Lead removed from campaign']);
+        } else {
+            json(['success' => false, 'error' => 'Failed to remove lead'], 500);
+        }
+    }
+    
+    /**
+     * Pause individual lead nurturing
+     */
+    public function pauseLead() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('campaigns');
+        }
+        
+        $campaignId = $_POST['campaign_id'] ?? null;
+        $leadId = $_POST['lead_id'] ?? null;
+        
+        if (!$campaignId || !$leadId) {
+            json(['success' => false, 'error' => 'Missing parameters'], 400);
+        }
+        
+        if ($this->campaignModel->pauseLeadNurturing($campaignId, $leadId)) {
+            json(['success' => true, 'message' => 'Lead nurturing paused']);
+        } else {
+            json(['success' => false, 'error' => 'Failed to pause lead'], 500);
+        }
+    }
+    
+    /**
+     * Resume individual lead nurturing
+     */
+    public function resumeLead() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            redirect('campaigns');
+        }
+        
+        $campaignId = $_POST['campaign_id'] ?? null;
+        $leadId = $_POST['lead_id'] ?? null;
+        
+        if (!$campaignId || !$leadId) {
+            json(['success' => false, 'error' => 'Missing parameters'], 400);
+        }
+        
+        if ($this->campaignModel->resumeLeadNurturing($campaignId, $leadId)) {
+            json(['success' => true, 'message' => 'Lead nurturing resumed']);
+        } else {
+            json(['success' => false, 'error' => 'Failed to resume lead'], 500);
+        }
+    }
 }

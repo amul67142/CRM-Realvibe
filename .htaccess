@@ -7,7 +7,7 @@ Options -Indexes
     # For production (Hostinger): use /
     # For local (XAMPP): use /Realvibe/
     # Auto-detect based on server
-    RewriteBase /
+    RewriteBase /Realvibe/
     
     # Force HTTPS (uncomment for production)
     # RewriteCond %{HTTPS} off

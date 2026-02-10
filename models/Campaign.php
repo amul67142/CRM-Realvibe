@@ -18,8 +18,8 @@ class Campaign {
         $sql = "
             SELECT c.*, p.project_name, cl.name as client_name, u.full_name as created_by_name,
                    (SELECT COUNT(*) FROM campaign_messages WHERE campaign_id = c.id) as messages_count,
-                   (SELECT COUNT(*) FROM lead_campaigns WHERE campaign_id = c.id) as enrolled_count,
-                   (SELECT COUNT(*) FROM lead_campaigns WHERE campaign_id = c.id AND status = 'active') as active_count
+                   (SELECT COUNT(*) FROM campaign_leads WHERE campaign_id = c.id) as enrolled_count,
+                   (SELECT COUNT(*) FROM campaign_leads WHERE campaign_id = c.id AND status = 'active') as active_count
             FROM campaigns c
             LEFT JOIN projects p ON c.project_id = p.id
             LEFT JOIN clients cl ON p.client_id = cl.id
@@ -213,5 +213,100 @@ class Campaign {
         $stmt = $this->db->query("SELECT COUNT(*) as count FROM campaigns WHERE is_active = 1");
         $result = $stmt->fetch();
         return $result['count'];
+    }
+    
+    /**
+     * Update campaign status
+     */
+    public function updateStatus($id, $status) {
+        $stmt = $this->db->prepare("UPDATE campaigns SET status = ? WHERE id = ?");
+        return $stmt->execute([$status, $id]);
+    }
+    
+    /**
+     * Get campaign leads
+     */
+    public function getCampaignLeads($campaignId, $status = null) {
+        $sql = "
+            SELECT cl.*, cl.id AS campaign_lead_id, l.name, l.phone, l.email, l.project_id
+            FROM campaign_leads cl
+            JOIN leads l ON cl.lead_id = l.id
+            WHERE cl.campaign_id = ?
+        ";
+        
+        $params = [$campaignId];
+        
+        if ($status) {
+            $sql .= " AND cl.status = ?";
+            $params[] = $status;
+        }
+        
+        $sql .= " ORDER BY cl.created_at DESC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+    
+    /**
+     * Add lead to campaign
+     */
+    public function addLeadToCampaign($campaignId, $leadId) {
+        $stmt = $this->db->prepare("
+            INSERT IGNORE INTO campaign_leads (campaign_id, lead_id, status)
+            VALUES (?, ?, 'pending')
+        ");
+        return $stmt->execute([$campaignId, $leadId]);
+    }
+    
+    /**
+     * Remove lead from campaign
+     */
+    public function removeLeadFromCampaign($campaignId, $leadId) {
+        $stmt = $this->db->prepare("
+            DELETE FROM campaign_leads 
+            WHERE campaign_id = ? AND lead_id = ?
+        ");
+        return $stmt->execute([$campaignId, $leadId]);
+    }
+    
+   /**
+     * Pause lead nurturing
+     */
+    public function pauseLeadNurturing($campaignId, $leadId) {
+        $stmt = $this->db->prepare("
+            UPDATE campaign_leads 
+            SET status = 'paused', updated_at = NOW()
+            WHERE campaign_id = ? AND lead_id = ?
+        ");
+        return $stmt->execute([$campaignId, $leadId]);
+    }
+    
+    /**
+     * Resume lead nurturing
+     */
+    public function resumeLeadNurturing($campaignId, $leadId) {
+        $stmt = $this->db->prepare("
+            UPDATE campaign_leads 
+            SET status = 'active', updated_at = NOW()
+            WHERE campaign_id = ? AND lead_id = ?
+        ");
+        return $stmt->execute([$campaignId, $leadId]);
+    }
+    
+    /**
+     * Get active leads for nurturing
+     */
+    public function getActiveLeadsForNurturing($campaignId) {
+        $stmt = $this->db->prepare("
+            SELECT cl.*, l.name, l.phone, l.email
+            FROM campaign_leads cl
+            JOIN leads l ON cl.lead_id = l.id
+            WHERE cl.campaign_id = ?
+                AND cl.status = 'active'
+            ORDER BY cl.last_message_sent_at ASC
+        ");
+        $stmt->execute([$campaignId]);
+        return $stmt->fetchAll();
     }
 }

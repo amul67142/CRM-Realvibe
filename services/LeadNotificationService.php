@@ -256,6 +256,94 @@ class LeadNotificationService {
     }
     
     /**
+     * Send custom WhatsApp message to a lead
+     * Uses CRM_Template campaign with custom message content
+     * 
+     * @param string $phone Lead phone number
+     * @param string $name Lead name
+     * @param string $customMessage Your custom message content
+     * @param string $source Source identifier (default: 'crm_custom')
+     * @return array Response with success status
+     */
+    public function sendCustomMessage($phone, $name, $customMessage, $source = 'crm_custom') {
+        $this->log("Sending custom message to: $name ($phone)");
+        
+        try {
+            // Format phone number
+            $formattedPhone = $this->formatPhoneNumber($phone);
+            
+            // Ensure phone has + prefix for AiSensy
+            if (!str_starts_with($formattedPhone, '+')) {
+                $formattedPhone = '+' . $formattedPhone;
+            }
+            
+            // Prepare payload - matching working Python script format
+            $payload = [
+                'apiKey' => $this->apiKey,
+                'campaignName' => 'CRM_Template',  // Use existing campaign
+                'destination' => $formattedPhone,
+                'userName' => $name,
+                'templateParams' => [
+                    $name,           // {{1}} - Name
+                    $customMessage   // {{2}} - Custom Message
+                ],
+                'source' => $source,
+                'media' => (object)[],
+                'buttons' => [],
+                'carouselCards' => [],
+                'location' => (object)[]
+            ];
+            
+            $this->log("Payload: " . json_encode($payload));
+            
+            // Send request
+            $ch = curl_init($this->apiUrl);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => true,
+                CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+                CURLOPT_POSTFIELDS => json_encode($payload),
+                CURLOPT_TIMEOUT => 30
+            ]);
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $curlError = curl_error($ch);
+            curl_close($ch);
+            
+            $this->log("Response Code: $httpCode");
+            $this->log("Response: $response");
+            
+            if ($curlError) {
+                throw new Exception("CURL Error: $curlError");
+            }
+            
+            if ($httpCode == 200 || $httpCode == 201) {
+                $this->log("Custom message sent successfully");
+                return [
+                    'success' => true,
+                    'message' => 'Message sent successfully',
+                    'response' => json_decode($response, true)
+                ];
+            } else {
+                $this->log("Failed to send custom message. HTTP Code: $httpCode");
+                return [
+                    'success' => false,
+                    'error' => "HTTP Error: $httpCode",
+                    'response' => $response
+                ];
+            }
+            
+        } catch (Exception $e) {
+            $this->log("Exception: " . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
      * Format phone number for India (prepend 91 if needed)
      * 
      * @param string $phone Phone number

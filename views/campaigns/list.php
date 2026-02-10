@@ -97,7 +97,6 @@ include BASE_PATH . 'views/layouts/header.php';
                         </div>
                         
                         <?php if ($campaign['description']): ?>
-                            <p class="text-gray-600 mt-2"><?= e(truncate($campaign['description'], 100)) ?></p>
                         <?php endif; ?>
                     </div>
                     
@@ -112,14 +111,79 @@ include BASE_PATH . 'views/layouts/header.php';
                         </div>
                     </div>
                     
-                    <div class="card-actions justify-end mt-4 pt-4 border-t">
+                    <!-- Status Badge -->
+                    <div class="mt-4">
+                        <?php 
+                        $status = $campaign['status'] ?? 'draft';
+                        $statusColors = [
+                            'draft' => 'badge-neutral',
+                            'active' => 'badge-success',
+                            'paused' => 'badge-warning',
+                            'completed' => 'badge-info'
+                        ];
+                        $statusColor = $statusColors[$status] ?? 'badge-neutral';
+                        ?>
+                        <span class="badge <?= $statusColor ?>"><?= ucfirst($status) ?></span>
+                        <?php if ($campaign['whatsapp_method'] ?? null): ?>
+                            <span class="badge badge-outline badge-sm ml-2">
+                                <?= $campaign['whatsapp_method'] === 'whatsapp_web' ? '📱 WhatsApp Web' : '☁️ AiSensy' ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="card-actions justify-end mt-4 pt-4 border-t flex-wrap gap-2">
+                        <!-- Analytics (always visible) -->
                         <a href="<?= url("campaigns/analytics?id={$campaign['id']}") ?>" class="btn btn-outline btn-sm">
-                            Analytics
+                            📊 Analytics
                         </a>
+                        
                         <?php if (hasPermission('manager')): ?>
-                            <a href="<?= url("campaigns/builder?id={$campaign['id']}") ?>" class="btn btn-primary btn-sm">
-                                Edit Messages
+                            <!-- Edit Messages -->
+                            <a href="<?= url("campaigns/builder?id={$campaign['id']}") ?>" class="btn btn-outline btn-sm">
+                                ✏️ Edit Messages
                             </a>
+                            
+                            <!-- Manage Leads -->
+                            <a href="<?= url("campaigns/manage-leads?id={$campaign['id']}") ?>" class="btn btn-outline btn-sm">
+                                👥 Manage Leads
+                            </a>
+                            
+                            <!-- Start Button (only for draft campaigns) -->
+                            <?php if ($status === 'draft'): ?>
+                                <a href="<?= url("campaigns/start?id={$campaign['id']}") ?>" 
+                                   class="btn btn-success btn-sm"
+                                   onclick="return confirm('Start this campaign and send welcome messages to all leads?')">
+                                    ▶️ Start Campaign
+                                </a>
+                            <?php endif; ?>
+                            
+                            <!-- Pause Button (only for active campaigns) -->
+                            <?php if ($status === 'active'): ?>
+                                <a href="<?= url("campaigns/pause?id={$campaign['id']}") ?>" 
+                                   class="btn btn-warning btn-sm"
+                                   onclick="return confirm('Pause this campaign? No new messages will be sent.')">
+                                    ⏸️ Pause
+                                </a>
+                            <?php endif; ?>
+                            
+                            <!-- Resume Button (only for paused campaigns) -->
+                            <?php if ($status === 'paused'): ?>
+                                <a href="<?= url("campaigns/resume?id={$campaign['id']}") ?>" 
+                                   class="btn btn-success btn-sm"
+                                   onclick="return confirm('Resume this campaign? Messages will start sending again.')">
+                                    ▶️ Resume
+                                </a>
+                            <?php endif; ?>
+                            
+                            <!-- Delete Button (admin only) -->
+                            <?php if (hasPermission('admin')): ?>
+                                <a href="<?= url("campaigns/delete?id={$campaign['id']}") ?>" 
+                                   class="btn btn-error btn-sm"
+                                   onclick="return confirm('Are you sure you want to delete this campaign? This cannot be undone!')">
+                                    🗑️ Delete
+                                </a>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>

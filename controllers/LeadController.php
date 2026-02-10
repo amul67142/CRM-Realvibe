@@ -280,4 +280,103 @@ class LeadController {
         
         redirect('leads');
     }
+    
+    /**
+     * Send custom WhatsApp message to a lead
+     * AJAX endpoint
+     * Supports both WhatsApp Web and AiSensy (with fallback)
+     */
+    public function sendCustomMessage() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            json(['success' => false, 'error' => 'Invalid request method'], 405);
+        }
+        
+        // Get JSON payload
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        $leadId = $input['lead_id'] ?? null;
+        $message = $input['message'] ?? null;
+        $useWhatsAppWeb = $input['use_whatsapp_web'] ?? true; // Default to WhatsApp Web
+        
+        if (!$leadId || !$message) {
+            json(['success' => false, 'error' => 'Lead ID and message are required'], 400);
+        }
+        
+        // Get lead details
+        $lead = $this->leadModel->getById($leadId);
+        if (!$lead) {
+            json(['success' => false, 'error' => 'Lead not found'], 404);
+        }
+        
+        $result = [];
+        
+        // Try WhatsApp Web first (if enabled)
+        if ($useWhatsAppWeb) {
+            require_once __DIR__ . '/../services/WhatsAppWebService.php';
+            $whatsappWebService = new WhatsAppWebService();
+            
+            // Check if WhatsApp Web service is available
+            if ($whatsappWebService->isAvailable()) {
+                $result = $whatsappWebService->sendMessage(
+                    $lead['phone'],
+                    $message,
+                    true // Queue if busy
+                );
+                
+                if ($result['success'] || isset($result['queued'])) {
+                    // Log the message
+                    $this->messageModel->create([
+                        'lead_id' => $leadId,
+                        'message_type' => 'custom_whatsapp_web',
+                        'content' => $message,
+                        'sent_at' => date('Y-m-d H:i:s')
+                    ]);
+                    
+                    json([
+                        'success' => true,
+                        'method' => 'WhatsApp Web',
+                        'queued' => isset($result['queued']) ? $result['queued'] : false,
+                        'message' => isset($result['queued']) && $result['queued'] 
+                            ? 'Message queued for delivery'
+                            : 'Message sent successfully via WhatsApp Web!'
+                    ]);
+                }
+            }
+        }
+        
+        // Fallback to AiSensy if WhatsApp Web failed or not enabled
+        require_once __DIR__ . '/../services/LeadNotificationService.php';
+        $notificationService = new LeadNotificationService();
+        
+        $result = $notificationService->sendCustomMessage(
+            $lead['phone'],
+            $lead['name'],
+            $message,
+            'crm_custom_nurture'
+        );
+        
+        if ($result['success']) {
+            // Log the message
+            $this->messageModel->create([
+                'lead_id' => $leadId,
+                'message_type' => 'custom_aisensy',
+                'content' => $message,
+                'sent_at' => date('Y-m-d H:i:s')
+            ]);
+            
+            json([
+                'success' => true,
+                'method' => 'AiSensy',
+                'message' => 'Message sent successfully via AiSensy!'
+            ]);
+        } else {
+            json([
+                'success' => false,
+                'error' => $result['error'] ?? 'Failed to send message via any method'
+            ], 500);
+        }
+    }
 }
+

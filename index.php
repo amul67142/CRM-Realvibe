@@ -87,6 +87,7 @@ $routes = [
     'leads/conversation' => ['controller' => 'LeadController', 'action' => 'conversation', 'auth' => true],
     'leads/send-message' => ['controller' => 'LeadController', 'action' => 'sendMessage', 'auth' => true],
     'leads/update-status' => ['controller' => 'LeadController', 'action' => 'updateStatus', 'auth' => true],
+    'leads/send-custom-message' => ['controller' => 'LeadController', 'action' => 'sendCustomMessage', 'auth' => true],
     
     // Campaigns
     'campaigns' => ['controller' => 'CampaignController', 'action' => 'list', 'auth' => true],
@@ -96,6 +97,14 @@ $routes = [
     'campaigns/builder' => ['controller' => 'CampaignController', 'action' => 'builder', 'auth' => true],
     'campaigns/analytics' => ['controller' => 'CampaignController', 'action' => 'analytics', 'auth' => true],
     'campaigns/toggle-status' => ['controller' => 'CampaignController', 'action' => 'toggleStatus', 'auth' => true],
+    'campaigns/start' => ['controller' => 'CampaignController', 'action' => 'start', 'auth' => true],
+    'campaigns/pause' => ['controller' => 'CampaignController', 'action' => 'pause', 'auth' => true],
+    'campaigns/resume' => ['controller' => 'CampaignController', 'action' => 'resume', 'auth' => true],
+    'campaigns/manage-leads' => ['controller' => 'CampaignController', 'action' => 'manageLeads', 'auth' => true],
+    'campaigns/add-lead' => ['controller' => 'CampaignController', 'action' => 'addLead', 'auth' => true],
+    'campaigns/remove-lead' => ['controller' => 'CampaignController', 'action' => 'removeLead', 'auth' => true],
+    'campaigns/pause-lead' => ['controller' => 'CampaignController', 'action' => 'pauseLead', 'auth' => true],
+    'campaigns/resume-lead' => ['controller' => 'CampaignController', 'action' => 'resumeLead', 'auth' => true],
     
     // Messages
     'messages/templates' => ['controller' => 'MessageController', 'action' => 'templates', 'auth' => true],
