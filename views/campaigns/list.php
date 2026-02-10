@@ -124,9 +124,9 @@ include BASE_PATH . 'views/layouts/header.php';
                         $statusColor = $statusColors[$status] ?? 'badge-neutral';
                         ?>
                         <span class="badge <?= $statusColor ?>"><?= ucfirst($status) ?></span>
-                        <?php if ($campaign['whatsapp_method'] ?? null): ?>
+                        <?php if (($campaign['whatsapp_method'] ?? '') === 'aisensy'): ?>
                             <span class="badge badge-outline badge-sm ml-2">
-                                <?= $campaign['whatsapp_method'] === 'whatsapp_web' ? '📱 WhatsApp Web' : '☁️ AiSensy' ?>
+                                ☁️ AiSensy
                             </span>
                         <?php endif; ?>
                     </div>

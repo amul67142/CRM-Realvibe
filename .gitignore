@@ -1,0 +1,53 @@
+# Node modules (WhatsApp service)
+whatsapp-service/node_modules/
+node_modules/
+
+# WhatsApp session data
+whatsapp-service/.wwebjs_auth/
+whatsapp-service/.wwebjs_cache/
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Environment files
+whatsapp-service/.env
+.env
+
+# Logs
+logs/
+*.log
+
+# Session data
+sessions/
+
+# Vendor (PHP Composer)
+vendor/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Upload directories (optional - only if you don't want to commit uploads)
+# uploads/
+# public/uploads/
+
+# Database backups
+*.sql
+*.sql.gz
+database/backups/
+
+# Config files with sensitive data (be careful with these)
+# config/database.php
+# config/aisensy.php

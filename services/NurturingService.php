@@ -1,11 +1,11 @@
 <?php
 /**
  * Nurturing Service
- * Handles automated WhatsApp nurturing via WhatsApp Web
+ * Handles automated WhatsApp nurturing via AiSensy
  */
 
 require_once __DIR__  . '/../config/config.php';
-require_once __DIR__ . '/WhatsAppWebService.php';
+require_once __DIR__ . '/AiSensyService.php';
 
 class NurturingService {
     private $db;
@@ -20,7 +20,7 @@ class NurturingService {
     
     public function __construct() {
         $this->db = getDatabaseConnection();
-        $this->whatsapp = new WhatsAppWebService();
+        $this->whatsapp = new AiSensyService();
         $this->logFile = BASE_PATH . 'logs/nurturing.log';
         
         // Ensure log directory exists
@@ -37,11 +37,8 @@ class NurturingService {
     public function processNurturing() {
         $this->log("========== Starting nurturing process ==========");
         
-        // Check if WhatsApp is available
-        if (!$this->whatsapp->isAvailable()) {
-            $this->log("ERROR: WhatsApp Web not available. Skipping.");
-            return false;
-        }
+        // AiSensy is always available via API
+        // No need to check availability
         
         // Check if we're within sending hours
         $currentHour = (int)date('H');
@@ -137,8 +134,8 @@ class NurturingService {
             // Prepare message content (replace variables)
             $content = $this->prepareMessageContent($message['message_content'], $leadInfo);
             
-            // Send via WhatsApp Web
-            $result = $this->whatsapp->sendMessage($leadInfo['phone'], $content, true);
+            // Send via AiSensy
+            $result = $this->whatsapp->sendMessage($leadInfo['phone'], $content);
             
             if ($result['success'] || isset($result['queued'])) {
                 // Update lead progress
@@ -194,8 +191,8 @@ class NurturingService {
             // Replace variables
             $content = $this->prepareMessageContent($welcomeMsg, $leadInfo);
             
-            // Send via WhatsApp Web
-            $result = $this->whatsapp->sendMessage($leadInfo['phone'], $content, false); // Send immediately, don't queue
+            // Send via AiSensy
+            $result = $this->whatsapp->sendMessage($leadInfo['phone'], $content);
             
             if ($result['success']) {
                 // Update welcome_sent_at
@@ -269,7 +266,7 @@ class NurturingService {
         $stmt = $this->db->query("
             SELECT * FROM campaigns 
             WHERE status = 'active' 
-                AND whatsapp_method IN ('whatsapp_web', 'both')
+                AND whatsapp_method IN ('aisensy', 'both')
             ORDER BY id ASC
         ");
         return $stmt->fetchAll();
