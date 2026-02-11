@@ -95,7 +95,7 @@ include BASE_PATH . 'views/layouts/header.php';
                 <tr class="bg-gray-50 border-b border-gray-100">
                     <th class="w-10 pl-6 py-4">
                         <label class="cursor-pointer">
-                            <input type="checkbox" id="selectAll" class="w-5 h-5 border-gray-300 rounded text-primary focus:ring-primary cursor-pointer" />
+                            <input type="checkbox" id="selectAll" class="checkbox checkbox-sm checkbox-primary rounded-sm" />
                         </label>
                     </th>
                     <th class="text-xs font-bold text-gray-500 uppercase tracking-wider py-4">Lead Name</th>
@@ -125,7 +125,7 @@ include BASE_PATH . 'views/layouts/header.php';
                         <tr class="hover:bg-gray-50/80 transition-colors group">
                             <td class="pl-6 py-4">
                                 <label class="cursor-pointer">
-                                    <input type="checkbox" name="ids[]" value="<?= $lead['id'] ?>" class="w-5 h-5 border-gray-300 rounded text-primary focus:ring-primary cursor-pointer lead-checkbox" />
+                                    <input type="checkbox" name="ids[]" value="<?= $lead['id'] ?>" class="checkbox checkbox-sm checkbox-primary rounded-sm lead-checkbox" />
                                 </label>
                             </td>
                             <td class="py-4 whitespace-nowrap">
