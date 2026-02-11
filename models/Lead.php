@@ -70,7 +70,7 @@ class Lead {
             $params[] = $filters['date_to'];
         }
         
-        $sql .= " ORDER BY l.created_at DESC, l.id DESC";
+        $sql .= " ORDER BY l.id DESC, l.created_at DESC";
         
         if ($limit) {
             $sql .= " LIMIT ? OFFSET ?";
@@ -334,7 +334,7 @@ class Lead {
             SELECT l.*, p.project_name
             FROM leads l
             LEFT JOIN projects p ON l.project_id = p.id
-            ORDER BY l.created_at DESC, l.id DESC
+            ORDER BY l.id DESC, l.created_at DESC
             LIMIT ?
         ");
         
