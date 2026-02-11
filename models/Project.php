@@ -150,6 +150,15 @@ class Project {
      * Delete project
      */
     public function delete($id) {
+        // Delete associated leads first
+        $deleteLeads = $this->db->prepare("DELETE FROM leads WHERE project_id = ?");
+        $deleteLeads->execute([$id]);
+        
+        // Delete associated meta lead forms
+        $deleteMetaForms = $this->db->prepare("DELETE FROM meta_lead_forms WHERE project_id = ?");
+        $deleteMetaForms->execute([$id]);
+
+        // Delete the project
         $stmt = $this->db->prepare("DELETE FROM projects WHERE id = ?");
         return $stmt->execute([$id]);
     }

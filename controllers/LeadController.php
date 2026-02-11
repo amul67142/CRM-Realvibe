@@ -148,8 +148,8 @@ class LeadController {
                     continue;
                 }
 
-                // Clean phone
-                $phone = preg_replace('/[^0-9]/', '', $phone);
+                // Clean and format phone number for consistent duplicate checking
+                $phone = formatPhoneNumber($phone);
                 
                 // Duplicate check
                 if ($this->leadModel->checkDuplicate($phone, $projectId)) {
@@ -163,6 +163,11 @@ class LeadController {
                 if ($dateStr) {
                     $timestamp = strtotime($dateStr);
                     if ($timestamp) {
+                        // If date is in the future (e.g., "30 Nov" parsed as current year 2026 but meant for 2025),
+                        // subtract 1 year
+                        if ($timestamp > time()) {
+                            $timestamp = strtotime('-1 year', $timestamp);
+                        }
                         $createdAt = date('Y-m-d H:i:s', $timestamp);
                     }
                 }
