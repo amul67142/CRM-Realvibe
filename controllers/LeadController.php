@@ -311,6 +311,38 @@ class LeadController {
     }
 
     /**
+     * Bulk delete leads
+     */
+    public function bulkDelete() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ids = $_POST['ids'] ?? [];
+            
+            if (empty($ids)) {
+                setFlashMessage('No leads selected for deletion.', 'warning');
+                redirect('leads');
+            }
+            
+            // Only allow managers to bulk delete? Or everyone? Let's check permission
+            if (!hasPermission('manager')) {
+                setFlashMessage('Permission denied.', 'error');
+                redirect('leads');
+            }
+            
+            if ($this->leadModel->deleteMany($ids)) {
+                setFlashMessage(count($ids) . ' leads deleted successfully.', 'success');
+            } else {
+                setFlashMessage('Failed to delete leads.', 'error');
+            }
+            
+            redirect('leads');
+        }
+        
+        redirect('leads');
+    }
+
+    /**
      * Create new lead
      */
     public function create() {
