@@ -272,19 +272,6 @@ class Lead {
         $stmt = $this->db->prepare("DELETE FROM leads WHERE id = ?");
         return $stmt->execute([$id]);
     }
-
-    /**
-     * Delete multiple leads
-     */
-    public function deleteMany($ids) {
-        if (empty($ids)) return false;
-        
-        $placeholders = str_repeat('?,', count($ids) - 1) . '?';
-        $sql = "DELETE FROM leads WHERE id IN ($placeholders)";
-        
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute($ids);
-    }
     
     /**
      * Get lead by phone and project

@@ -89,7 +89,6 @@ $routes = [
     'leads/create' => ['controller' => 'LeadController', 'action' => 'create', 'auth' => true],
     'leads/export' => ['controller' => 'LeadController', 'action' => 'export', 'auth' => true],
     'leads/import' => ['controller' => 'LeadController', 'action' => 'import', 'auth' => true],
-    'leads/bulk-delete' => ['controller' => 'LeadController', 'action' => 'bulkDelete', 'auth' => true],
     'leads/process-import' => ['controller' => 'LeadController', 'action' => 'processImport', 'auth' => true],
     'leads/edit' => ['controller' => 'LeadController', 'action' => 'edit', 'auth' => true],
     'leads/delete' => ['controller' => 'LeadController', 'action' => 'delete', 'auth' => true],

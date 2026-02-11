@@ -76,29 +76,11 @@ include BASE_PATH . 'views/layouts/header.php';
 
 <!-- Leads Table -->
 <div class="card bg-base-100 border border-base-200 shadow-sm overflow-hidden">
-    <!-- Bulk Actions Bar -->
-    <div id="bulkActions" class="bg-base-200 p-4 mb-4 rounded-lg flex justify-between items-center hidden transition-all duration-300">
-        <div class="font-medium">
-            <span id="selectedCount" class="font-bold text-primary">0</span> leads selected
-        </div>
-        <div>
-            <button id="deleteSelectedBtn" class="btn btn-error btn-sm text-white">
-                <span class="material-symbols-outlined text-lg mr-1">delete</span>
-                Delete Selected
-            </button>
-        </div>
-    </div>
-
     <div class="overflow-x-auto">
         <table class="table w-full">
             <thead>
                 <tr class="bg-gray-50 border-b border-gray-100">
-                    <th class="w-10 pl-6 py-4">
-                        <label class="cursor-pointer">
-                            <input type="checkbox" id="selectAll" class="checkbox checkbox-sm checkbox-primary rounded-sm" />
-                        </label>
-                    </th>
-                    <th class="text-xs font-bold text-gray-500 uppercase tracking-wider py-4">Lead Name</th>
+                    <th class="text-xs font-bold text-gray-500 uppercase tracking-wider py-4 pl-6">Lead Name</th>
                     <th class="text-xs font-bold text-gray-500 uppercase tracking-wider py-4">Contact</th>
                     <th class="text-xs font-bold text-gray-500 uppercase tracking-wider py-4">Project</th>
                     <th class="text-xs font-bold text-gray-500 uppercase tracking-wider py-4">Status</th>
@@ -123,12 +105,7 @@ include BASE_PATH . 'views/layouts/header.php';
                 <?php else: ?>
                     <?php foreach ($leads as $lead): ?>
                         <tr class="hover:bg-gray-50/80 transition-colors group">
-                            <td class="pl-6 py-4">
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" name="ids[]" value="<?= $lead['id'] ?>" class="checkbox checkbox-sm checkbox-primary rounded-sm lead-checkbox" />
-                                </label>
-                            </td>
-                            <td class="py-4 whitespace-nowrap">
+                            <td class="pl-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center gap-3">
                                     <div class="avatar placeholder">
                                         <div class="bg-neutral-focus text-neutral-content rounded-full w-10 h-10 shadow-sm">
@@ -217,76 +194,5 @@ include BASE_PATH . 'views/layouts/header.php';
         </div>
     <?php endif; ?>
 </div>
-
-    <?php endif; ?>
-</div>
-
-<!-- Bulk Delete Form -->
-<form id="bulkDeleteForm" action="<?= url('leads/bulk-delete') ?>" method="POST" style="display: none;">
-    <!-- IDs will be added here by JS -->
-</form>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const selectAll = document.getElementById('selectAll');
-    const leadCheckboxes = document.querySelectorAll('.lead-checkbox');
-    const bulkActions = document.getElementById('bulkActions');
-    const selectedCountSpan = document.getElementById('selectedCount');
-    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
-    const bulkDeleteForm = document.getElementById('bulkDeleteForm');
-
-    function updateBulkActions() {
-        const selectedCount = document.querySelectorAll('.lead-checkbox:checked').length;
-        
-        if (selectedCount > 0) {
-            bulkActions.classList.remove('hidden');
-            selectedCountSpan.textContent = selectedCount;
-        } else {
-            bulkActions.classList.add('hidden');
-        }
-    }
-
-    if (selectAll) {
-        selectAll.addEventListener('change', function() {
-            leadCheckboxes.forEach(cb => {
-                cb.checked = this.checked;
-            });
-            updateBulkActions();
-        });
-    }
-
-    leadCheckboxes.forEach(cb => {
-        cb.addEventListener('change', function() {
-            // Update select all state
-            if (!this.checked) {
-                selectAll.checked = false;
-            } else if (document.querySelectorAll('.lead-checkbox:checked').length === leadCheckboxes.length) {
-                selectAll.checked = true;
-            }
-            updateBulkActions();
-        });
-    });
-
-    if (deleteSelectedBtn) {
-        deleteSelectedBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to delete these leads? This action cannot be undone.')) {
-                // Clear previous inputs
-                bulkDeleteForm.innerHTML = '';
-                
-                // Add select IDs to form
-                document.querySelectorAll('.lead-checkbox:checked').forEach(cb => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'ids[]';
-                    input.value = cb.value;
-                    bulkDeleteForm.appendChild(input);
-                });
-                
-                bulkDeleteForm.submit();
-            }
-        });
-    }
-});
-</script>
 
 <?php include BASE_PATH . 'views/layouts/footer.php'; ?>
