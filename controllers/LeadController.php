@@ -143,6 +143,40 @@ class LeadController {
         fclose($output);
         exit;
     }
+
+    /**
+     * Bulk delete leads
+     */
+    public function bulkDelete() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $ids = $_POST['lead_ids'] ?? [];
+            
+            if (empty($ids)) {
+                setFlashMessage('No leads selected', 'warning');
+                redirect('leads');
+            }
+            
+            // Only manager can delete
+            if (!hasPermission('manager')) {
+                setFlashMessage('Permission denied', 'error');
+                redirect('leads');
+            }
+            
+            $count = 0;
+            foreach ($ids as $id) {
+                if ($this->leadModel->delete($id)) {
+                    $count++;
+                }
+            }
+            
+            setFlashMessage("$count leads deleted successfully", 'success');
+            redirect('leads');
+        }
+        
+        redirect('leads');
+    }
     
     /**
      * Import leads view
