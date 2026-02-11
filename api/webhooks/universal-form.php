@@ -91,6 +91,30 @@ try {
             $phone = '91' . $phone;
         }
     }
+
+    // FAILSAFE: Check if Email and Phone are swapped (Common Google Sheet Error)
+    // If Email looks like a number AND Phone looks like "9101" (garbage) or is empty
+    if (is_numeric(preg_replace('/[^0-9]/', '', $email)) && strlen($email) >= 10) {
+        // Email is actually a phone number
+        $realPhone = $email;
+        $realEmail = $phone; // Might be garbage "9101"
+
+        logWebhook("⚠️ DETECTED SWAPPED DATA! Swapping back...");
+        
+        $phone = preg_replace('/[^0-9+]/', '', $realPhone);
+        if (!str_starts_with($phone, '+') && !str_starts_with($phone, '91')) {
+            $phone = '91' . $phone;
+        }
+        
+        // If the "Phone" (which was email) looks like garbage "9101", discard it
+        if ($realEmail == '9101' || $realEmail == '01') {
+            $email = null;
+        } else {
+            $email = $realEmail;
+        }
+        
+        logWebhook("✅ CORRECTION -> Phone: $phone, Email: $email");
+    }
     
     // Build notes
     $notes = "Source: $source\nReceived: " . date('Y-m-d H:i:s') . "\n";
