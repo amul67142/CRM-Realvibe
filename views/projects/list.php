@@ -57,7 +57,10 @@ include BASE_PATH . 'views/layouts/header.php';
             <div class="card bg-base-100 shadow hover:shadow-xl transition-shadow">
                 <div class="card-body">
                     <div class="flex justify-between items-start mb-2">
-                        <h3 class="card-title text-lg"><?= e($project['project_name']) ?></h3>
+                        <div>
+                            <div class="text-xs font-mono text-gray-400 mb-1">ID: <?= $project['id'] ?></div>
+                            <h3 class="card-title text-lg"><?= e($project['project_name']) ?></h3>
+                        </div>
                         <?php if ($project['is_active']): ?>
                             <span class="badge badge-success badge-sm">Active</span>
                         <?php else: ?>
