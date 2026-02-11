@@ -5,9 +5,9 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
     # For production (Hostinger): use /
-    # For local (XAMPP): use /Realvibe/
-    # Auto-detect based on server
-    RewriteBase /Realvibe/
+    # For local (XAMPP/Subdir): use /Realvibe/
+    # Auto-detect is tricky, so manual toggle:
+    RewriteBase /
     
     # Force HTTPS (uncomment for production)
     # RewriteCond %{HTTPS} off

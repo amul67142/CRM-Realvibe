@@ -33,13 +33,19 @@ if (ENVIRONMENT === 'production') {
 }
 
 // Get the requested URL
-$requestUri = $_SERVER['REQUEST_URI'];
-$scriptName = $_SERVER['SCRIPT_NAME'];
-$basePath = str_replace('\\', '/', dirname($scriptName));
+$requestUri = '';
 
-// Remove base path from request URI
-if ($basePath !== '/' && strpos($requestUri, $basePath) === 0) {
-    $requestUri = substr($requestUri, strlen($basePath));
+if (isset($_GET['url'])) {
+    $requestUri = $_GET['url'];
+} else {
+    $requestUri = $_SERVER['REQUEST_URI'];
+    $scriptName = $_SERVER['SCRIPT_NAME'];
+    $basePath = str_replace('\\', '/', dirname($scriptName));
+
+    // Remove base path from request URI
+    if ($basePath !== '/' && strpos($requestUri, $basePath) === 0) {
+        $requestUri = substr($requestUri, strlen($basePath));
+    }
 }
 
 // Remove query string
@@ -81,6 +87,8 @@ $routes = [
     // Leads
     'leads' => ['controller' => 'LeadController', 'action' => 'list', 'auth' => true],
     'leads/create' => ['controller' => 'LeadController', 'action' => 'create', 'auth' => true],
+    'leads/import' => ['controller' => 'LeadController', 'action' => 'import', 'auth' => true],
+    'leads/process-import' => ['controller' => 'LeadController', 'action' => 'processImport', 'auth' => true],
     'leads/edit' => ['controller' => 'LeadController', 'action' => 'edit', 'auth' => true],
     'leads/delete' => ['controller' => 'LeadController', 'action' => 'delete', 'auth' => true],
     'leads/view' => ['controller' => 'LeadController', 'action' => 'view', 'auth' => true],

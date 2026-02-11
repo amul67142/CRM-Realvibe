@@ -65,9 +65,172 @@ class LeadController {
             'perPage' => $perPage
         ];
         
+        $currentPage = $page;
+        
         include BASE_PATH . 'views/leads/list.php';
     }
     
+    /**
+     * Import leads view
+     */
+    public function import() {
+        requireLogin();
+        $projects = $this->projectModel->getForDropdown();
+        include BASE_PATH . 'views/leads/import.php';
+    }
+
+    /**
+     * Process CSV import
+     */
+    public function processImport() {
+        requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!verifyToken($_POST['csrf_token'] ?? '')) {
+                setFlashMessage('Invalid request', 'error');
+                redirect('leads/import');
+            }
+
+            if (!isset($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+                setFlashMessage('Please upload a valid CSV file', 'error');
+                redirect('leads/import');
+            }
+
+            $projectId = $_POST['project_id'];
+            if (!$projectId) {
+                setFlashMessage('Please select a project', 'error');
+                redirect('leads/import');
+            }
+
+            $file = $_FILES['csv_file']['tmp_name'];
+            $handle = fopen($file, "r");
+            
+            if ($handle === FALSE) {
+                setFlashMessage('Could not read file', 'error');
+                redirect('leads/import');
+            }
+
+            // Get headers
+            $headers = fgetcsv($handle);
+            if (!$headers) {
+                setFlashMessage('Empty file', 'error');
+                redirect('leads/import');
+            }
+            
+            // Normalize headers
+            $headers = array_map(function($h) {
+                return strtolower(trim($h));
+            }, $headers);
+
+            $successCount = 0;
+            $errorCount = 0;
+            $rowNum = 1; // Start after header
+
+            while (($data = fgetcsv($handle)) !== FALSE) {
+                $rowNum++;
+                // Pad data if row is shorter than headers
+                if (count($data) < count($headers)) {
+                    $data = array_pad($data, count($headers), '');
+                }
+                
+                $row = array_combine($headers, $data);
+                
+                // Map fields checking for various common names
+                $name = $row['name'] ?? null;
+                
+                // Prioritize Whatsapp Number, then Phone Number, then Phone
+                $whatsapp = $row['whatsapp number'] ?? $row['whatsapp_number'] ?? null;
+                $mobile = $row['phone number'] ?? $row['phone_number'] ?? $row['mobile'] ?? $row['phone'] ?? null;
+                $phone = $whatsapp ?: $mobile;
+
+                if (!$name || !$phone) {
+                    $errorCount++;
+                    continue;
+                }
+
+                // Clean phone
+                $phone = preg_replace('/[^0-9]/', '', $phone);
+                
+                // Duplicate check
+                if ($this->leadModel->checkDuplicate($phone, $projectId)) {
+                    $errorCount++; 
+                    continue;
+                }
+
+                // Handle Date (MM/DD/YYYY or DD/MM/YYYY or similar)
+                $createdAt = date('Y-m-d H:i:s'); // Default to now
+                $dateStr = $row['date'] ?? null;
+                if ($dateStr) {
+                    $timestamp = strtotime($dateStr);
+                    if ($timestamp) {
+                        $createdAt = date('Y-m-d H:i:s', $timestamp);
+                    }
+                }
+
+                // Handle Status
+                // "Lead Status 2" seems to contain the system status (Call Back, Qualified, etc)
+                // "Lead Status 1" is more descriptive
+                $statusRaw = $row['lead status 2'] ?? $row['lead_status_2'] ?? 
+                             $row['lead status 1'] ?? $row['lead_status_1'] ?? 
+                             $row['status'] ?? 'new';
+                             
+                $statusMap = [
+                    'call back' => 'contacted',
+                    'qualified' => 'qualified',
+                    'disqualified' => 'disqualified',
+                    'not responding' => 'contacted',
+                    'interested' => 'interested',
+                    'converted' => 'won',
+                    'lost' => 'lost'
+                ];
+                
+                $status = $statusMap[strtolower(trim($statusRaw))] ?? 'new';
+
+                // Notes - Combine extra info
+                $notesParts = [];
+                if (!empty($row['notes'])) $notesParts[] = $row['notes'];
+                if (!empty($row['lead status 1'])) $notesParts[] = "Status Detail: " . $row['lead status 1'];
+                if (!empty($row['feedback 1'])) $notesParts[] = "Feedback 1: " . $row['feedback 1'];
+                if (!empty($row['feedback 2'])) $notesParts[] = "Feedback 2: " . $row['feedback 2'];
+                if (!empty($row['remarks'])) $notesParts[] = "Remarks: " . $row['remarks'];
+                
+                $notes = implode("\n", $notesParts);
+
+                // Email
+                $email = $row['email id'] ?? $row['email'] ?? '';
+
+                $leadData = [
+                    'project_id' => $projectId,
+                    'name' => sanitizeInput($name),
+                    'phone' => sanitizeInput($phone),
+                    'email' => sanitizeInput($email),
+                    'budget' => sanitizeInput($row['budget'] ?? ''),
+                    'status' => $status,
+                    'notes' => sanitizeInput($notes),
+                    'source' => 'import',
+                    'created_at' => $createdAt
+                ];
+
+                $result = $this->leadModel->create($leadData);
+                if ($result['success']) {
+                    $successCount++;
+                } else {
+                    $errorCount++;
+                }
+            }
+            
+            fclose($handle);
+            
+            $msg = "Import completed: $successCount leads imported successfully.";
+            if ($errorCount > 0) {
+                $msg .= " $errorCount rows skipped (duplicates or missing data).";
+            }
+            
+            setFlashMessage($msg, $successCount > 0 ? 'success' : 'warning');
+            redirect('leads');
+        }
+    }
+
     /**
      * Create new lead
      */

@@ -169,15 +169,9 @@ class Lead {
             return ['success' => false, 'error' => 'duplicate', 'message' => 'Lead with this phone number already exists for this project'];
         }
         
-        $stmt = $this->db->prepare("
-            INSERT INTO leads (project_id, name, phone, email, source, status, is_subscribed, 
-                               budget, notes, lead_data, assigned_to)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        
-        $leadData = isset($data['lead_data']) ? json_encode($data['lead_data']) : null;
-        
-        $result = $stmt->execute([
+        $fields = "project_id, name, phone, email, source, status, is_subscribed, budget, notes, lead_data, assigned_to";
+        $placeholders = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
+        $params = [
             $data['project_id'],
             $data['name'],
             $phone,
@@ -189,7 +183,17 @@ class Lead {
             $data['notes'] ?? null,
             $leadData,
             $data['assigned_to'] ?? null
-        ]);
+        ];
+
+        if (isset($data['created_at'])) {
+            $fields .= ", created_at";
+            $placeholders .= ", ?";
+            $params[] = $data['created_at'];
+        }
+        
+        $stmt = $this->db->prepare("INSERT INTO leads ($fields) VALUES ($placeholders)");
+        
+        $result = $stmt->execute($params);
         
         if ($result) {
             return ['success' => true, 'id' => $this->db->lastInsertId()];
