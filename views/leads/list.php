@@ -9,6 +9,10 @@ include BASE_PATH . 'views/layouts/header.php';
         <p class="text-sm text-gray-500 mt-1">Manage and track your potential clients</p>
     </div>
     <div class="flex gap-3">
+        <a href="<?= url('leads/export') . (empty($filters) ? '' : '?' . http_build_query($filters)) ?>" class="btn btn-outline btn-success btn-sm font-medium normal-case">
+            <span class="material-symbols-outlined text-lg mr-1">download</span>
+            Export Excel
+        </a>
         <a href="<?= url('leads/import') ?>" class="btn btn-outline btn-sm font-medium normal-case">
             <span class="material-symbols-outlined text-lg mr-1">upload_file</span>
             Import CSV

@@ -69,6 +69,80 @@ class LeadController {
         
         include BASE_PATH . 'views/leads/list.php';
     }
+
+    /**
+     * Export leads to CSV
+     */
+    public function export() {
+        requireLogin();
+        
+        // Get filters from query string (same as list)
+        $filters = [];
+        if (isset($_GET['project_id']) && !empty($_GET['project_id'])) {
+            $filters['project_id'] = $_GET['project_id'];
+        }
+        if (isset($_GET['source']) && !empty($_GET['source'])) {
+            $filters['source'] = $_GET['source'];
+        }
+        if (isset($_GET['status']) && !empty($_GET['status'])) {
+            $filters['status'] = $_GET['status'];
+        }
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $filters['search'] = $_GET['search'];
+        }
+        
+        // Get ALL leads matching filters (no pagination)
+        $leads = $this->leadModel->getAll($filters);
+        
+        // Set headers for download
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=leads_' . date('Y-m-d_H-i') . '.csv');
+        
+        // Create output stream
+        $output = fopen('php://output', 'w');
+        
+        // Add BOM for Excel UTF-8 compatibility
+        fwrite($output, "\xEF\xBB\xBF");
+        
+        // Add headers
+        fputcsv($output, [
+            'Lead ID',
+            'Name',
+            'Phone',
+            'Email',
+            'Project',
+            'Client',
+            'Status',
+            'Source',
+            'Budget',
+            'Notes',
+            'Created Date',
+            'Assigned To',
+            'Unread Replies'
+        ]);
+        
+        // Add data
+        foreach ($leads as $lead) {
+            fputcsv($output, [
+                $lead['id'],
+                $lead['name'],
+                $lead['phone'],
+                $lead['email'],
+                $lead['project_name'],
+                $lead['client_name'],
+                ucfirst($lead['status']),
+                ucfirst($lead['source'] ?? 'manual'),
+                $lead['budget'],
+                $lead['notes'],
+                date('Y-m-d H:i:s', strtotime($lead['created_at'])),
+                $lead['assigned_to_name'] ?? 'Unassigned',
+                $lead['unread_replies'] ? 'Yes' : 'No'
+            ]);
+        }
+        
+        fclose($output);
+        exit;
+    }
     
     /**
      * Import leads view
