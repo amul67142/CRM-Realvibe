@@ -1,122 +1,104 @@
 <div class="drawer-side">
     <label for="main-drawer" class="drawer-overlay"></label>
     
-    <aside class="bg-base-100 w-64 h-full">
-        <!-- Logo -->
-        <div class="p-4 bg-primary text-primary-content">
-            <h2 class="text-2xl font-bold text-center"><?= APP_NAME ?></h2>
-            <p class="text-xs text-center opacity-80">Lead Management</p>
+    <aside class="bg-white w-64 h-full border-r border-gray-200 flex flex-col transition-all duration-300" id="app-sidebar">
+        <!-- Logo Section -->
+        <div class="h-16 flex items-center justify-center border-b border-gray-100 bg-gradient-to-br from-indigo-600 to-violet-600 text-white overflow-hidden">
+            <div class="flex items-center gap-3 w-full px-6" id="sidebar-logo">
+                <div class="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined text-xl">rocket_launch</span>
+                </div>
+                <div class="whitespace-nowrap transition-opacity duration-300 menu-text">
+                    <h2 class="text-lg font-bold tracking-tight"><?= APP_NAME ?></h2>
+                </div>
+            </div>
         </div>
         
         <!-- Menu -->
-        <ul class="menu p-4 overflow-y-auto">
+        <ul class="menu p-4 overflow-y-auto flex-1 gap-1 text-base-content/70">
             <li>
-                <a href="<?= url('dashboard') ?>" class="<?= $_SERVER['REQUEST_URI'] == url('dashboard') ? 'active' : '' ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Dashboard
+                <a href="<?= url('dashboard') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/dashboard') !== false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                    <span class="menu-text">Dashboard</span>
                 </a>
             </li>
             
+            <li class="menu-title mt-4 text-xs font-bold uppercase tracking-wider text-gray-400 pl-3 menu-text">Leads & Sales</li>
+            
+            <li>
+                <a href="<?= url('leads') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/leads') !== false && strpos($_SERVER['REQUEST_URI'], '/create') === false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">groups</span>
+                    <span class="menu-text">All Leads</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="<?= url('leads/create') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/leads/create') !== false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">person_add</span>
+                    <span class="menu-text">Add New Lead</span>
+                </a>
+            </li>
+            
+            <li class="menu-title mt-4 text-xs font-bold uppercase tracking-wider text-gray-400 pl-3 menu-text">Marketing</li>
+            
+            <li>
+                <a href="<?= url('campaigns') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/campaigns') !== false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">campaign</span>
+                    <span class="menu-text">Campaigns</span>
+                </a>
+            </li>
+            
+            <li>
+                <a href="<?= url('messages/templates') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/messages/templates') !== false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">library_books</span>
+                    <span class="menu-text">Templates</span>
+                </a>
+            </li>
+
             <?php if (hasPermission('manager')): ?>
-            <li class="menu-title">
-                <span>Management</span>
-            </li>
+            <li class="menu-title mt-4 text-xs font-bold uppercase tracking-wider text-gray-400 pl-3 menu-text">Management</li>
             
             <li>
-                <a href="<?= url('clients') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                    Clients
+                <a href="<?= url('projects') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/projects') !== false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">apartment</span>
+                    <span class="menu-text">Projects</span>
                 </a>
             </li>
             
             <li>
-                <a href="<?= url('projects') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                    </svg>
-                    Projects
+                <a href="<?= url('clients') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/clients') !== false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">domain</span>
+                    <span class="menu-text">Clients</span>
                 </a>
             </li>
             <?php endif; ?>
             
-            <li class="menu-title">
-                <span>Leads</span>
-            </li>
-            
-            <li>
-                <a href="<?= url('leads') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    All Leads
-                </a>
-            </li>
-            
-            <li>
-                <a href="<?= url('leads/create') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                    Add Lead
-                </a>
-            </li>
-            
-            <li class="menu-title">
-                <span>Campaigns</span>
-            </li>
-            
-            <li>
-                <a href="<?= url('campaigns') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    Campaigns
-                </a>
-            </li>
-            
-            <li>
-                <a href="<?= url('messages/templates') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Templates
-                </a>
-            </li>
-            
             <?php if (hasPermission('admin')): ?>
-            <li class="menu-title">
-                <span>Settings</span>
-            </li>
+            <li class="menu-title mt-4 text-xs font-bold uppercase tracking-wider text-gray-400 pl-3 menu-text">System</li>
             
             <li>
-                <a href="<?= url('settings/integrations') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Integrations
-                </a>
-            </li>
-            
-            <li>
-                <a href="<?= url('settings/profile') ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Admin Profile
+                <a href="<?= url('settings/integrations') ?>" class="<?= strpos($_SERVER['REQUEST_URI'], '/settings') !== false ? 'active bg-indigo-50 text-indigo-600 font-semibold' : 'hover:bg-gray-50' ?> flex items-center gap-3">
+                    <span class="material-symbols-outlined text-[20px]">settings_input_component</span>
+                    <span class="menu-text">Integrations</span>
                 </a>
             </li>
             <?php endif; ?>
         </ul>
         
-        <!-- Footer -->
-        <div class="p-4 text-center text-xs text-gray-500 border-t">
-            <p>Version <?= APP_VERSION ?></p>
-            <p>&copy; <?= date('Y') ?> <?= APP_NAME ?></p>
+        <!-- User Profile (Bottom) -->
+        <div class="p-4 border-t border-gray-100 bg-gray-50/50">
+            <a href="<?= url('settings/profile') ?>" class="flex items-center gap-3 p-2 rounded-lg hover:bg-white transition-colors group">
+                <?php $currentUser = getCurrentUser(); ?>
+                <div class="avatar placeholder flex-shrink-0">
+                    <div class="bg-indigo-600 text-white rounded-full w-9 h-9 shadow-sm group-hover:shadow-md transition-shadow">
+                        <span class="text-xs font-bold"><?= strtoupper(substr($currentUser['full_name'], 0, 2)) ?></span>
+                    </div>
+                </div>
+                <div class="flex-1 min-w-0 menu-text transition-opacity duration-300">
+                    <p class="text-sm font-semibold text-gray-900 truncate"><?= e($currentUser['full_name']) ?></p>
+                    <p class="text-xs text-gray-500 truncate capitalize"><?= e($currentUser['role']) ?></p>
+                </div>
+            </a>
         </div>
     </aside>
 </div>

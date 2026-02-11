@@ -184,6 +184,19 @@ if (isset($routes[$requestUri])) {
                 $routeMatched = true;
                 break;
         }
+    } elseif (count($parts) == 3 && is_numeric($parts[1])) {
+        // Handle routes like leads/123/conversation
+        $resource = $parts[0];
+        $id = $parts[1];
+        $subAction = $parts[2];
+        
+        if ($resource === 'leads' && $subAction === 'conversation') {
+            $controllerName = 'LeadController';
+            $actionName = 'conversation';
+            $_GET['id'] = $id;
+            $requiresAuth = true;
+            $routeMatched = true;
+        }
     }
 }
 

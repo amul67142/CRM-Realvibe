@@ -254,7 +254,7 @@ class LeadController {
                 'name' => sanitizeInput($_POST['name']),
                 'phone' => sanitizeInput($_POST['phone']),
                 'email' => sanitizeInput($_POST['email'] ?? ''),
-                'source' => 'manual',
+                'source' => !empty($_POST['source']) ? sanitizeInput($_POST['source']) : 'manual',
                 'status' => $_POST['status'] ?? 'new',
                 'budget' => sanitizeInput($_POST['budget'] ?? ''),
                 'notes' => sanitizeInput($_POST['notes'] ?? '')

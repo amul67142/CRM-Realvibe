@@ -26,6 +26,26 @@
         </div>
     </footer>
     
+    <!-- Sidebar Toggle Script -->
+    <script>
+        // Simple Toggle Function
+        function toggleSidebar() {
+            const body = document.body;
+            body.classList.toggle('mini-sidebar');
+            
+            // Save state
+            const isMini = body.classList.contains('mini-sidebar');
+            localStorage.setItem('crm-sidebar-mini', isMini);
+        }
+
+        // Apply state on load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('crm-sidebar-mini') === 'true') {
+                document.body.classList.add('mini-sidebar');
+            }
+        });
+    </script>
+
     <!-- Auto-hide flash messages -->
     <script>
         setTimeout(function() {

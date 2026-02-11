@@ -111,7 +111,7 @@ function statusBadge($status) {
  */
 function sourceBadge($source) {
     if (empty($source)) {
-        return '<span class="badge badge-ghost">-</span>';
+        return '<span class="badge badge-ghost">Manual</span>';
     }
     
     $badges = [

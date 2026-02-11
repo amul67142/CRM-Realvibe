@@ -1,17 +1,275 @@
 /**
- * Custom CSS
- * Styles complementing Tailwind and DaisyUI
+ * Realvibe CRM - Premium Theme
+ * Modern, Clean, Aesthetic
  */
 
-/* Chat bubble styles */
-.chat-bubble-sent {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+:root {
+    /* Premium Color Palette */
+    --primary: #4F46E5;
+    /* Indigo 600 - Professional & Trustworthy */
+    --primary-focus: #4338CA;
+    /* Indigo 700 */
+    --secondary: #8B5CF6;
+    /* Violet 500 - Creative Accent */
+    --accent: #F59E0B;
+    /* Amber 500 - Attention */
+
+    /* Neutral Tones */
+    --bg-body: #F3F4F6;
+    /* Cool Gray 100 - Soft Background */
+    --bg-card: #FFFFFF;
+    /* Pure White */
+    --text-main: #111827;
+    /* Gray 900 - Sharp Text */
+    --text-muted: #6B7280;
+    /* Gray 500 - Secondary Text */
+
+    /* Status Colors (Pastel/Modern) */
+    --success-bg: #ECFDF5;
+    --success-text: #059669;
+    --warning-bg: #FFFBEB;
+    --warning-text: #D97706;
+    --error-bg: #FEF2F2;
+    --error-text: #DC2626;
+    --info-bg: #EFF6FF;
+    --info-text: #2563EB;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Card Styling --- */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    /* Subtle border */
+    border-radius: 1rem;
+    /* Rounded bumps */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    /* Soft elevation */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08),
+        0 4px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+/* --- Typography --- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    /* Tighter tracking for headlines */
+    color: var(--text-main);
+}
+
+/* --- Buttons --- */
+.btn {
+    border-radius: 0.5rem;
+    /* Medium rounded */
+    font-weight: 500;
+    text-transform: none;
+    /* Modern (no all-caps) */
+    letter-spacing: 0.01em;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--primary);
     color: white;
-    padding: 12px 16px;
-    border-radius: 18px 18px 4px 18px;
-    max-width: 70%;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-focus);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #E5E7EB;
+    color: var(--text-main);
+    box-shadow: none;
+}
+
+.btn-outline:hover {
+    background-color: #F9FAFB;
+    border-color: #D1D5DB;
+}
+
+/* --- Sidebar (Glassmorphism inspired) --- */
+.drawer-side .bg-base-100 {
+    background-color: var(--bg-card);
+    border-right: 1px solid #E5E7EB;
+}
+
+.menu li a {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.menu li a:hover,
+.menu li a.active {
+    background-color: #EEF2FF;
+    /* Indigo 50 */
+    color: var(--primary);
+}
+
+.menu li a.active {
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 0 var(--primary);
+    /* Left accent bar */
+}
+
+/* --- Chat Interface --- */
+.conversation-container {
+    background-color: #F8FAFC;
+    /* Slate 50 */
+    border-radius: 1rem;
+    border: 1px solid #E2E8F0;
+    padding: 1.5rem;
+    height: 550px;
+    overflow-y: auto;
+}
+
+/* Sent Bubble (Gradient) */
+.chat-bubble-sent {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: white;
+    border-radius: 1.25rem 1.25rem 0.25rem 1.25rem;
+    padding: 0.75rem 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+    margin-bottom: 0.5rem;
+    max-width: 75%;
     margin-left: auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.95rem;
+}
+
+/* Received Bubble (Soft White) */
+.chat-bubble-received {
+    background: white;
+    color: var(--text-main);
+    border: 1px solid #E5E7EB;
+    border-radius: 1.25rem 1.25rem 1.25rem 0.25rem;
+    padding: 0.75rem 1.25rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 0.5rem;
+    max-width: 75%;
+    font-size: 0.95rem;
+}
+
+/* --- Status Badges --- */
+.badge {
+    border: none;
+    font-weight: 600;
+    font-size: 0.75rem;
+    border-radius: 9999px;
+    /* Pill shape */
+    padding: 0.35em 0.8em;
+    text-transform: capitalize;
+}
+
+.badge-primary {
+    background-color: #EDE9FE;
+    color: #6D28D9;
+}
+
+/* Violet */
+.badge-secondary {
+    background-color: #FCE7F3;
+    color: #BE185D;
+}
+
+/* Pink */
+.badge-success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+}
+
+.badge-warning {
+    background-color: var(--warning-bg);
+    color: var(--warning-text);
+}
+
+.badge-error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+}
+
+.badge-info {
+    background-color: var(--info-bg);
+    color: var(--info-text);
+}
+
+.badge-ghost {
+    background-color: #F3F4F6;
+    color: #4B5563;
+}
+
+/* --- Table Styles --- */
+.table th {
+    background-color: #F9FAFB;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.table td {
+    border-bottom: 1px solid #F3F4F6;
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
 }
 
 .chat-bubble-received {
@@ -80,8 +338,13 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Badge enhancements */
@@ -172,7 +435,7 @@
     .no-print {
         display: none !important;
     }
-    
+
     .card {
         box-shadow: none !important;
         border: 1px solid #e5e7eb;
@@ -181,11 +444,12 @@
 
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
+
     .chat-bubble-sent,
     .chat-bubble-received {
         max-width: 85%;
     }
-    
+
     .conversation-container {
         height: 400px;
     }
@@ -210,16 +474,66 @@
 
 /* Notification bell animation */
 @keyframes ring {
-    0% { transform: rotate(0); }
-    10% { transform: rotate(14deg); }
-    20% { transform: rotate(-8deg); }
-    30% { transform: rotate(14deg); }
-    40% { transform: rotate(-4deg); }
-    50% { transform: rotate(10deg); }
-    60% { transform: rotate(0); }
-    100% { transform: rotate(0); }
+    0% {
+        transform: rotate(0);
+    }
+
+    10% {
+        transform: rotate(14deg);
+    }
+
+    20% {
+        transform: rotate(-8deg);
+    }
+
+    30% {
+        transform: rotate(14deg);
+    }
+
+    40% {
+        transform: rotate(-4deg);
+    }
+
+    50% {
+        transform: rotate(10deg);
+    }
+
+    60% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(0);
+    }
 }
 
 .notification-bell:hover {
     animation: ring 1s ease-in-out;
+}
+
+/* --- Mini Sidebar Mode --- */
+.mini-sidebar .drawer-side {
+    width: auto !important;
+}
+
+.mini-sidebar aside#app-sidebar {
+    width: 80px !important;
+}
+
+.mini-sidebar .menu-text,
+.mini-sidebar .menu-title {
+    display: none !important;
+    opacity: 0;
+}
+
+.mini-sidebar #sidebar-logo {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    justify-content: center !important;
+}
+
+.mini-sidebar .menu li a {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }

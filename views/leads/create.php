@@ -54,6 +54,20 @@ include BASE_PATH . 'views/layouts/header.php';
                 </div>
                 
                 <div class="form-control md:col-span-2">
+                    <label class="label"><span class="label-text">Source</span></label>
+                    <select name="source" class="select select-bordered">
+                        <option value="manual" <?= selected(old('source', 'manual'), 'manual') ?>>Manual</option>
+                        <option value="website" <?= selected(old('source'), 'website') ?>>Website</option>
+                        <option value="facebook" <?= selected(old('source'), 'facebook') ?>>Facebook</option>
+                        <option value="instagram" <?= selected(old('source'), 'instagram') ?>>Instagram</option>
+                        <option value="google" <?= selected(old('source'), 'google') ?>>Google</option>
+                        <option value="linkedin" <?= selected(old('source'), 'linkedin') ?>>LinkedIn</option>
+                        <option value="referral" <?= selected(old('source'), 'referral') ?>>Referral</option>
+                        <option value="other" <?= selected(old('source'), 'other') ?>>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-control md:col-span-2">
                     <label class="label"><span class="label-text">Status</span></label>
                     <select name="status" class="select select-bordered">
                         <option value="new" <?= selected(old('status', 'new'), 'new') ?>>New</option>

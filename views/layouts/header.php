@@ -18,8 +18,22 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= asset('css/custom.css') ?>">
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols Outlined -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-base-200">
+<body class="bg-base-200 font-sans">
     
     <div class="drawer lg:drawer-open">
         <input id="main-drawer" type="checkbox" class="drawer-toggle" />
@@ -28,12 +42,16 @@
         <div class="drawer-content flex flex-col">
             <!-- Navbar -->
             <div class="navbar bg-base-100 shadow-md">
-                <div class="flex-none lg:hidden">
-                    <label for="main-drawer" class="btn btn-square btn-ghost">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
+                <div class="flex-none">
+                    <!-- Mobile Drawer Toggle -->
+                    <label for="main-drawer" class="btn btn-square btn-ghost lg:hidden">
+                        <span class="material-symbols-outlined">menu</span>
                     </label>
+                    
+                    <!-- Desktop Sidebar Toggle -->
+                    <button class="btn btn-square btn-ghost hidden lg:inline-flex" id="sidebarToggle" onclick="toggleSidebar()">
+                        <span class="material-symbols-outlined">menu_open</span>
+                    </button>
                 </div>
                 
                 <div class="flex-1">
@@ -90,3 +108,25 @@
                         <span><?= e($flash['message']) ?></span>
                     </div>
                 <?php endif; ?>
+
+<script>
+    // Sidebar Toggle Logic
+    $(document).ready(function() {
+        const $body = $('body');
+        const $sidebar = $('#app-sidebar');
+        const $toggle = $('#sidebarToggle');
+        
+        // Restore state
+        const isMini = localStorage.getItem('crm-sidebar-mini') === 'true';
+        if (isMini) {
+            $body.addClass('mini-sidebar');
+        }
+        
+        // Toggle click
+        $toggle.on('click', function() {
+            $body.toggleClass('mini-sidebar');
+            const isNowMini = $body.hasClass('mini-sidebar');
+            localStorage.setItem('crm-sidebar-mini', isNowMini);
+        });
+    });
+</script>
