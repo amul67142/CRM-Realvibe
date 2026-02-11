@@ -88,7 +88,9 @@ include __DIR__ . '/../layouts/header.php';
                                 </td>
                                 <td><?= e($lead['project_name']) ?></td>
                                 <td><?= sourceBadge($lead['source']) ?></td>
-                                <td><?= timeAgo($lead['created_at']) ?></td>
+                                <td>
+                                    <span class="text-sm"><?= date('d M, Y', strtotime($lead['created_at'])) ?></span>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

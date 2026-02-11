@@ -118,7 +118,10 @@ include BASE_PATH . 'views/layouts/header.php';
                                 <td><?= e($lead['project_name']) ?></td>
                                 <td><?= sourceBadge($lead['source']) ?></td>
                                 <td><?= statusBadge($lead['status']) ?></td>
-                                <td><?= timeAgo($lead['created_at']) ?></td>
+                                <td>
+                                    <div class="font-medium"><?= date('d M Y', strtotime($lead['created_at'])) ?></div>
+                                    <div class="text-xs text-gray-500"><?= date('h:i A', strtotime($lead['created_at'])) ?></div>
+                                </td>
                                 <td>
                                     <div class="dropdown dropdown-end">
                                         <label tabindex="0" class="btn btn-ghost btn-xs">⋮</label>
