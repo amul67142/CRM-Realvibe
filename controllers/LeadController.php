@@ -382,9 +382,10 @@ class LeadController {
                 
                 // Send lead alert notifications to client and admin
                 try {
-                    require_once __DIR__ . '/../services/LeadNotificationService.php';
-                    $notificationService = new LeadNotificationService();
-                    $notificationService->sendNewLeadAlert($lead, $project);
+                    // require_once __DIR__ . '/../services/LeadNotificationService.php';
+                    // $notificationService = new LeadNotificationService();
+                    // $notificationService->sendNewLeadAlert($lead, $project);
+                    error_log("Lead notification disabled per user request");
                 } catch (Exception $e) {
                     error_log("Lead notification error: " . $e->getMessage());
                 }

@@ -186,14 +186,15 @@ try {
                     $project = $projectStmt->fetch();
                     
                     if ($project) {
-                        $notificationService = new LeadNotificationService();
-                        $result = $notificationService->sendNewLeadAlert($lead, $project);
+                        // $notificationService = new LeadNotificationService();
+                        // $result = $notificationService->sendNewLeadAlert($lead, $project);
                         
-                        if ($result['success']) {
-                            logWebhook("✅ Lead notification sent via LeadNotificationService");
-                        } else {
-                            logWebhook("⚠️ Failed to send notification: " . ($result['message'] ?? 'Unknown error'));
-                        }
+                        // if ($result['success']) {
+                        //     logWebhook("✅ Lead notification sent via LeadNotificationService");
+                        // } else {
+                        //     logWebhook("⚠️ Failed to send notification: " . ($result['message'] ?? 'Unknown error'));
+                        // }
+                        logWebhook("ℹ️ Lead notification disabled per user request");
                     } else {
                         logWebhook("⚠️ Project not found for ID: $projectId");
                     }
