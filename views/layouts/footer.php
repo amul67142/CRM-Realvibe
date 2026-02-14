@@ -1,10 +1,5 @@
-            </div>
-        </div>
-        
-        <!-- Sidebar -->
-        <?php include __DIR__ . '/sidebar.php'; ?>
-    </div>
-    
+    </main> <!-- End Main Content -->
+
     <!-- Main JS -->
     <script>
         // Define base URL for JavaScript
@@ -13,43 +8,26 @@
     <script src="<?= asset('js/main.js') ?>"></script>
     <script src="<?= asset('js/notifications.js') ?>"></script>
     
-    
     <!-- Footer -->
-    <footer class="footer footer-center p-4 bg-base-300 text-base-content mt-8">
+    <footer class="footer footer-center p-6 bg-white text-base-content border-t border-gray-200 mt-auto">
         <div>
-            <p>© <?= date('Y') ?> Realvibe CRM. All rights reserved.</p>
+            <div class="flex items-center gap-2 mb-2 opacity-50">
+                <span class="material-symbols-outlined text-2xl">rocket_launch</span>
+                <span class="font-bold text-lg"><?= APP_NAME ?></span>
+            </div>
+            <p class="text-gray-500">© <?= date('Y') ?> Realvibe CRM. All rights reserved.</p>
             <div class="flex gap-4 justify-center mt-2">
-                <a href="/public/privacy-policy.php" class="link link-hover" target="_blank">Privacy Policy</a>
-                <span>•</span>
-                <a href="/public/terms-and-conditions.php" class="link link-hover" target="_blank">Terms & Conditions</a>
+                <a href="#" class="link link-hover text-sm text-gray-400">Privacy Policy</a>
+                <span class="text-gray-300">•</span>
+                <a href="#" class="link link-hover text-sm text-gray-400">Terms & Conditions</a>
             </div>
         </div>
     </footer>
     
-    <!-- Sidebar Toggle Script -->
-    <script>
-        // Simple Toggle Function
-        function toggleSidebar() {
-            const body = document.body;
-            body.classList.toggle('mini-sidebar');
-            
-            // Save state
-            const isMini = body.classList.contains('mini-sidebar');
-            localStorage.setItem('crm-sidebar-mini', isMini);
-        }
-
-        // Apply state on load
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('crm-sidebar-mini') === 'true') {
-                document.body.classList.add('mini-sidebar');
-            }
-        });
-    </script>
-
     <!-- Auto-hide flash messages -->
     <script>
         setTimeout(function() {
-            $('.flash-message').fadeOut('slow');
+            $('.alert').fadeOut('slow');
         }, 3000);
     </script>
 </body>

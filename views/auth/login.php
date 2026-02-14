@@ -6,8 +6,8 @@
     <title>Login - <?= APP_NAME ?></title>
     
     <!-- Tailwind CSS + DaisyUI -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css?v=fix" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     
     <style>
         body {
