@@ -39,12 +39,6 @@
     <?php 
     requireLogin(); 
     $user = getCurrentUser();
-    $currentUri = $_SERVER['REQUEST_URI'];
-    // Helper to check active state
-    function isActive($path) {
-        global $currentUri;
-        return strpos($currentUri, $path) !== false ? 'active' : '';
-    }
     ?>
 
     <!-- Navbar -->

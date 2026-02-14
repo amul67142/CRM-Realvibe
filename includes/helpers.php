@@ -267,3 +267,30 @@ function formatFileSize($bytes) {
     
     return round($bytes, 2) . ' ' . $units[$i];
 }
+
+
+/**
+ * Check if current URL matches path (for active menu state)
+ */
+function isActive($path) {
+    if (empty($path)) return '';
+    
+    // Get current URI path
+    $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $basePath = parse_url(BASE_URL, PHP_URL_PATH) ?? '/';
+    
+    // Normalize
+    $currentPath = rtrim($currentPath, '/');
+    $basePath = rtrim($basePath, '/');
+    
+    // Check for dashboard/home
+    if ($path === 'dashboard') {
+        // If current path is base path (home) or base path/dashboard
+        if ($currentPath === $basePath || $currentPath === $basePath . '/dashboard' || $currentPath === '') {
+            return 'active';
+        }
+    }
+    
+    // For other paths, check if current path contains the segment
+    return strpos($currentPath, $path) !== false ? 'active' : '';
+}
